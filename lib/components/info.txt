@@ -1,1 +1,0 @@
-this folder will be used for creating components that will be part of the screens
