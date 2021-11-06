@@ -9,6 +9,10 @@ import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 
+// IMPORTS from screen
+import 'package:at_notes/screens/home.dart';
+import 'package:at_notes/screens/take_note.dart';
+
 Future<void> main() async {
   await AtEnv.load();
   runApp(const MyApp());
@@ -67,41 +71,13 @@ class _MyAppState extends State<MyApp> {
                   onError: (error) {
                     _logger.severe('Onboarding throws $error error');
                   },
-                  nextScreen: const HomeScreen(),
+                  // nextScreen: HomeScreen(),
+                  nextScreen: TakenoteScreen(),
                 );
               },
               child: const Text('Onboard an @sign'),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-//* The next screen after onboarding (second screen)
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    /// Get the AtClientManager instance
-    var atClientManager = AtClientManager.getInstance();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            const Text(
-                'Successfully onboarded and navigated to FirstAppScreen'),
-
-            /// Use the AtClientManager instance to get the current atsign
-            Text(
-                'Current @sign: ${atClientManager.atClient.getCurrentAtSign()}'),
-          ],
         ),
       ),
     );
