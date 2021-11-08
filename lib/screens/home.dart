@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +35,29 @@ class HomeScreen extends StatelessWidget {
                 'Feb 10, 2020',
                 false)
           ]),
+          Padding(
+              padding: const EdgeInsets.only(right: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // REFERENCE : https://api.flutter.dev/flutter/material/IconButton-class.html
+                  Ink(
+                    decoration: const ShapeDecoration(
+                      color: Colors.lightBlue,
+                      shape: CircleBorder(),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.add),
+                      color: Colors.white,
+                      // when the button is pressed
+                      onPressed: () {
+                        print(
+                            'Add button clicked ... Will go to the take_note.dart screen');
+                      },
+                    ),
+                  )
+                ],
+              ))
         ],
       ),
     );

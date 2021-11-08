@@ -71,7 +71,7 @@ class _MyAppState extends State<MyApp> {
                   onError: (error) {
                     _logger.severe('Onboarding throws $error error');
                   },
-                  nextScreen: HomeScreen(),
+                  nextScreen: const HomeScreen(),
                   // nextScreen: TakenoteScreen(),
                 );
               },
