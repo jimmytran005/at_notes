@@ -97,7 +97,12 @@ class Note extends StatelessWidget {
                       children: [
                         Text(description!,
                             style: const TextStyle(color: descriptionColor)),
-                        Text(date!, style: const TextStyle(color: dateColor))
+                        SizedBox(
+                            width: MediaQuery.of(context)
+                                .size
+                                .width, // will make the size of the sizedBox to be 100% of the parent component
+                            child: Text(date!,
+                                style: const TextStyle(color: dateColor)))
                       ]))),
         ));
   }
