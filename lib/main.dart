@@ -71,8 +71,8 @@ class _MyAppState extends State<MyApp> {
                   onError: (error) {
                     _logger.severe('Onboarding throws $error error');
                   },
-                  // nextScreen: HomeScreen(),
-                  nextScreen: TakenoteScreen(),
+                  nextScreen: const MainWidget(),
+                  // nextScreen: TakenoteScreen(),
                 );
               },
               child: const Text('Onboard an @sign'),
@@ -80,6 +80,28 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ),
+    );
+  }
+}
+
+// This is the main widget that houses all of the screens routings
+// REFERENCE: https://flutter.dev/docs/cookbook/navigation/named-routes
+class MainWidget extends StatelessWidget {
+  const MainWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Named Routes Demo',
+      // Start the app with the "/" named route. In this case, the app starts
+      // on the FirstScreen widget.
+      initialRoute: '/',
+      routes: {
+        // When navigating to the "/" route, build the HomeScreen widget.
+        '/': (context) => HomeScreen(),
+        // When navigating to the "/note" route, build the TakenotesScreen widget.
+        '/note': (context) => TakenoteScreen(),
+      },
     );
   }
 }
