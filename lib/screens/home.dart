@@ -49,10 +49,9 @@ class HomeScreen extends StatelessWidget {
                     child: IconButton(
                       icon: const Icon(Icons.add),
                       color: Colors.white,
-                      // when the button is pressed
+                      // when the button is pressed, we want to navigate to the note widget
                       onPressed: () {
-                        print(
-                            'Add button clicked ... Will go to the take_note.dart screen');
+                        Navigator.pushNamed(context, '/note');
                       },
                     ),
                   )
