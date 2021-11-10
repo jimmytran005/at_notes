@@ -71,8 +71,8 @@ class _MyAppState extends State<MyApp> {
                   onError: (error) {
                     _logger.severe('Onboarding throws $error error');
                   },
-                  // nextScreen: HomeScreen(),
-                  nextScreen: TakenoteScreen(),
+                  nextScreen: HomeScreen(),
+                  // nextScreen: TakenoteScreen(),
                 );
               },
               child: const Text('Onboard an @sign'),
