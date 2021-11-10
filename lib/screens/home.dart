@@ -91,25 +91,28 @@ class Note extends StatelessWidget {
 
     return Padding(
         padding: const EdgeInsets.all(10.0),
-        child: SizedBox(
-          width: widthOfScreen / (isExpanded! ? 1.1 : 2.4),
-          height: heightOfScreen / 5,
-          child: Card(
-              color: backgroundColor,
-              child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(description!,
-                            style: const TextStyle(color: descriptionColor)),
-                        SizedBox(
-                            width: MediaQuery.of(context)
-                                .size
-                                .width, // will make the size of the sizedBox to be 100% of the parent component
-                            child: Text(date!,
-                                style: const TextStyle(color: dateColor)))
-                      ]))),
-        ));
+        child: GestureDetector(
+            onTap: () => {},
+            child: SizedBox(
+              width: widthOfScreen / (isExpanded! ? 1.1 : 2.4),
+              height: heightOfScreen / 5,
+              child: Card(
+                  color: backgroundColor,
+                  child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(description!,
+                                style:
+                                    const TextStyle(color: descriptionColor)),
+                            SizedBox(
+                                width: MediaQuery.of(context)
+                                    .size
+                                    .width, // will make the size of the sizedBox to be 100% of the parent component
+                                child: Text(date!,
+                                    style: const TextStyle(color: dateColor)))
+                          ]))),
+            )));
   }
 }
