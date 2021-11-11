@@ -20,52 +20,90 @@ class InputField extends StatefulWidget {
 }
 
 class _InputFieldState extends State<InputField> {
-  final AtClientManager atClientInstance = AtClientManager.getInstance();
+  // data retrieved variable
+  String _dataValue = '';
 
-  final _textController = TextEditingController();
+  // controllers for the two input fields
+  final _keyController = TextEditingController();
+  final _valueController = TextEditingController();
 
-  // this will get the at client instance to do database operations
-  AtClient? _getAtClientForAtsign() => atClientInstance.atClient;
+  void setData(String data) {
+    print('inside setData $data');
+    setState(() {
+      _dataValue = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         TextFormField(
-          controller: _textController,
+          decoration: InputDecoration.collapsed(hintText: 'Key'),
+          controller: _keyController,
+        ),
+        TextFormField(
+          decoration: InputDecoration.collapsed(hintText: 'Value'),
+          controller: _valueController,
         ),
         TextButton(
           onPressed: _doPerformSaveToDatabase,
-          child: Text('Save Content'),
+          child: Text('Save data'),
         ),
         TextButton(
-          onPressed: _clearFields,
-          child: Text('Clear Content'),
-        )
+          onPressed: _lookupData,
+          child: Text('Look up data'),
+        ),
+        Text(_dataValue)
       ],
     );
   }
 
-  void _clearFields() {
-    _textController.text = '';
+// This function will look up the data based on the key
+  void _lookupData() async {
+    String lookupKey = _keyController.text;
+    AtKey atKey = AtKey();
+    atKey.key = lookupKey;
+
+    // lookups the specifc value, based on the key
+    dynamic val = await _lookup(atKey);
+    setData((val.value == null) ? 'No Value Associated with key' : val.value);
   }
 
-  void _doPerformSaveToDatabase() {
-    String content = _textController.text;
-    print('content: $content');
-  }
+  // this will save the contents to the secondary server
+  Future<void> _doPerformSaveToDatabase() async {
+    AtKey atKey = AtKey();
+    // get the key and value from the input field
+    String theKey = _keyController.text;
+    String theValue = _valueController.text;
 
-  /// Creates or updates [AtKey.key] with it's
-  /// [AtValue.value] and returns Future bool value.
-  Future<bool> put(AtKey atKey, String value) async {
-    try {
-      return _getAtClientForAtsign()!.put(atKey, value);
-    } on AtClientException catch (atClientExcep) {
-      _logger.severe('❌ AtClientException : ${atClientExcep.errorMessage}');
-      return false;
-    } catch (e) {
-      _logger.severe('❌ Exception : ${e.toString()}');
-      return false;
+    // set the key
+    atKey.key = theKey;
+
+    // PUT operation to save the key pair value into the database
+    // The .put() function returns a boolean indicating if it has successfully saved the data into database
+    bool successPut =
+        await AtClientManager.getInstance().atClient.put(atKey, theValue);
+
+    // Check if the opaeration is successful
+    if (successPut) {
+      setData('sucessfully saved onto database {' +
+          atKey.key! +
+          ':"' +
+          theValue +
+          '"}');
+      print('sucessfully saved onto database');
+    } else {
+      setData('failed to saved!');
+      print('failed to saved!');
     }
+  }
+
+  // GET look up the value based on the key
+  Future<dynamic> _lookup(AtKey atKey) async {
+    if (atKey != null) {
+      return AtClientManager.getInstance().atClient.get(atKey);
+    }
+    return null;
   }
 }
