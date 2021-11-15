@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'TextEditor.dart';
+import 'home.dart';
 
 class TakenoteScreen extends StatelessWidget {
   @override
@@ -32,7 +33,12 @@ class TakenoteScreen extends StatelessWidget {
             padding: EdgeInsets.all(10.0),
             child: TextButton(
                 child: Text('Done', style: TextStyle(color: Colors.black)),
-                onPressed: () {  },
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  );
+                },
                 style: TextButton.styleFrom(backgroundColor: Colors.white,)
             ),
           ),
