@@ -32,7 +32,7 @@ class TakenoteScreen extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(10.0),
             child: TextButton(
-                child: Text('Done', style: TextStyle(color: Colors.black)),
+                child: Text('save', style: TextStyle(color: Colors.black)),
                 onPressed: () {
                   Navigator.push(
                     context,
