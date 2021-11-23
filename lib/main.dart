@@ -12,6 +12,7 @@ import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 // IMPORTS from screen
 import 'package:at_notes/screens/home.dart';
 import 'package:at_notes/screens/take_note.dart';
+import 'package:at_notes/screens/add_note.dart';
 
 Future<void> main() async {
   await AtEnv.load();
@@ -140,7 +141,7 @@ class MainWidget extends StatelessWidget {
         // When navigating to the "/" route, build the HomeScreen widget.
         '/': (context) => HomeScreen(),
         // When navigating to the "/note" route, build the TakenotesScreen widget.
-        '/note': (context) => TakenoteScreen(),
+        '/note': (context) => AddNote(),
       },
     );
   }
