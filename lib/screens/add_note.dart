@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home.dart';
+import 'package:at_notes/model/NoteModel.dart';
 class AddNote extends StatefulWidget {
   AddNote({Key? key}) : super(key: key);
 
@@ -48,7 +49,11 @@ class _AddNoteState extends State<AddNote> {
            child: TextButton(
                child: Text('save', style: TextStyle(color: Colors.black)),
                onPressed: () {
-
+                 setState((){
+                   title = titleController.text;
+                   body = bodyController.text;
+                   date = DateTime.now();
+                 });
 
                  Navigator.push(
                    context,

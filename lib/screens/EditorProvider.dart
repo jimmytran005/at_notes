@@ -41,8 +41,6 @@ class EditorProvider extends ChangeNotifier {
     final TextEditingController controller = TextEditingController(
         text: text?? ''
     );
-
-
     }
   }
 
