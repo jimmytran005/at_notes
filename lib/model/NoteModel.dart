@@ -5,3 +5,4 @@ class NoteModel{
 
   NoteModel({required this.title, required this.body, required this.creation_date});
 }
+
