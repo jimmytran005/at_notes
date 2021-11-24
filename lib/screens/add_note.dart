@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'home.dart';
 import 'package:at_notes/model/NoteModel.dart';
 class AddNote extends StatefulWidget {
-  AddNote({Key? key}) : super(key: key);
+  Note? note;
+
+  AddNote({@required this.note});
 
   @override
   _AddNoteState createState() => _AddNoteState();
@@ -10,6 +12,9 @@ class AddNote extends StatefulWidget {
 }
 
 class _AddNoteState extends State<AddNote> {
+  Note? note;
+  //_AddNoteState({@required this.note});
+
   String? title;
   String? body;
   DateTime? date;
@@ -20,6 +25,12 @@ class _AddNoteState extends State<AddNote> {
 
   @override
   Widget build(BuildContext context) {
+
+    if(widget.note!=null){
+      titleController = TextEditingController(text: widget.note!.title.toString());
+      bodyController = TextEditingController(text: widget.note!.description.toString());
+    }
+
    return Scaffold(
      appBar: AppBar(
        titleSpacing: 0.0,
@@ -54,7 +65,6 @@ class _AddNoteState extends State<AddNote> {
                    body = bodyController.text;
                    date = DateTime.now();
                  });
-
                  Navigator.push(
                    context,
                    MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -70,6 +80,7 @@ class _AddNoteState extends State<AddNote> {
        child: Column(
          children:[
               TextField(
+
                 controller: titleController,
                 decoration: InputDecoration(
                   border: InputBorder.none,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:at_notes/screens/add_note.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,46 +14,55 @@ class HomeScreen extends StatelessWidget {
           children: [
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Note(
+                  't1',
                   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
                   'Feb 10, 2020',
                   false),
               Note(
+                  't2',
                   'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit',
                   'Feb 10, 2020',
                   false)
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Note(
+                  't3',
                   'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit',
                   'Feb 10, 2020',
                   true),
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Note(
+                  't4',
                   'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.',
                   'Feb 10, 2020',
                   false),
               Note(
+                  't5',
                   'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.',
                   'Feb 10, 2020',
                   false)
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Note(
+                  't6',
                   'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.',
                   'Feb 10, 2020',
                   false),
               Note(
+                  't7',
                   'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.',
                   'Feb 10, 2020',
                   false)
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Note(
+                  't8',
                   'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.',
                   'Feb 10, 2020',
                   false),
               Note(
+                  't9',
                   'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.',
                   'Feb 10, 2020',
                   false)
@@ -73,11 +83,12 @@ class HomeScreen extends StatelessWidget {
 // ignore: must_be_immutable
 class Note extends StatelessWidget {
   // properties of the note
+  String? title;
   String? description;
   String? date;
   bool? isExpanded;
 
-  Note(this.description, this.date, this.isExpanded, {Key? key})
+  Note(this.title, this.description, this.date, this.isExpanded, {Key? key})
       : super(key: key);
 
   @override
@@ -92,7 +103,12 @@ class Note extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.all(10.0),
         child: GestureDetector(
-            onTap: () => {},
+            onTap: () => {
+              Navigator.push(context,
+              MaterialPageRoute<dynamic>(builder: (BuildContext context) {
+                return AddNote(note: this);
+              }))
+            },
             child: SizedBox(
               width: widthOfScreen / (isExpanded! ? 1.1 : 2.4),
               height: heightOfScreen / 5,
@@ -103,6 +119,9 @@ class Note extends StatelessWidget {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                            Text(title!,
+                                style:
+                                const TextStyle(color: descriptionColor)),
                             Text(description!,
                                 style:
                                     const TextStyle(color: descriptionColor)),
