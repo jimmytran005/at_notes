@@ -31,9 +31,11 @@ dependencies:
     sdk: flutter
 
   community_material_icon: ^5.3.45
-
   at_persistence_secondary_server: 3.0.5
   at_persistence_spec: 2.0.1
+  at_client_mobile: ^3.0.3
+  at_server_status: ^1.0.3
+  at_demo_data: ^1.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -1,3 +1,4 @@
+import 'package:at_notes/service/client_sdk_service.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'package:at_notes/model/NoteModel.dart';
@@ -65,6 +66,7 @@ class _AddNoteState extends State<AddNote> {
                    body = bodyController.text;
                    date = DateTime.now();
                  });
+                 _update(context);
                  Navigator.push(
                    context,
                    MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -80,7 +82,6 @@ class _AddNoteState extends State<AddNote> {
        child: Column(
          children:[
               TextField(
-
                 controller: titleController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
@@ -103,4 +104,13 @@ class _AddNoteState extends State<AddNote> {
      ),
    );
   }
+
+  Future<void> _update(BuildContext context) async{
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    String? atSign = clientSdkService.atsign;
+
+  }
+
+
+
 }

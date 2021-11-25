@@ -72,7 +72,7 @@ packages:
     source: hosted
     version: "3.0.4"
   at_client_mobile:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: at_client_mobile
       url: "https://pub.dartlang.org"
@@ -85,6 +85,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  at_demo_data:
+    dependency: "direct main"
+    description:
+      name: at_demo_data
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   at_lookup:
     dependency: transitive
     description:
@@ -114,7 +121,7 @@ packages:
     source: hosted
     version: "2.0.1"
   at_server_status:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: at_server_status
       url: "https://pub.dartlang.org"
