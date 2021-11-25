@@ -11,7 +11,6 @@ import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 
 // IMPORTS from screen
 import 'package:at_notes/screens/home.dart';
-import 'package:at_notes/screens/take_note.dart';
 import 'package:at_notes/screens/add_note.dart';
 
 Future<void> main() async {
@@ -76,7 +75,6 @@ class _MyAppState extends State<MyApp> {
                         _logger.severe('Onboarding throws $error error');
                       },
                       nextScreen: const MainWidget(),
-                      // nextScreen: TakenoteScreen(),
                     );
                   },
                   child: const Text('Onboard an @sign'),
