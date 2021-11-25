@@ -15,12 +15,12 @@ class HomeScreen extends StatelessWidget {
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Note(
                   't1',
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
+                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do e',
                   'Feb 10, 2020',
                   false),
               Note(
                   't2',
-                  'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit',
+                  'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui',
                   'Feb 10, 2020',
                   false)
             ]),
@@ -34,36 +34,36 @@ class HomeScreen extends StatelessWidget {
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Note(
                   't4',
-                  'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.',
+                  'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui ',
                   'Feb 10, 2020',
                   false),
               Note(
                   't5',
-                  'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.',
+                  'Ut enim ad minim veniam, quis nostrud exercitation ullamco lab',
                   'Feb 10, 2020',
                   false)
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Note(
                   't6',
-                  'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.',
+                  'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui of',
                   'Feb 10, 2020',
                   false),
               Note(
                   't7',
-                  'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.',
+                  'Ut enim ad minim veniam, quis nostrud exercitation ullamco la',
                   'Feb 10, 2020',
                   false)
             ]),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Note(
                   't8',
-                  'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit.',
+                  'Excepteur sint occaecat cupidatat non proident, sunt in culpa',
                   'Feb 10, 2020',
                   false),
               Note(
                   't9',
-                  'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.',
+                  'Ut enim ad minim veniam, quis nostrud exercitation ullamco la.',
                   'Feb 10, 2020',
                   false)
             ]),
@@ -104,11 +104,11 @@ class Note extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: GestureDetector(
             onTap: () => {
-              Navigator.push(context,
-              MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-                return AddNote(note: this);
-              }))
-            },
+                  Navigator.push(context, MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) {
+                    return AddNote(note: this);
+                  }))
+                },
             child: SizedBox(
               width: widthOfScreen / (isExpanded! ? 1.1 : 2.4),
               height: heightOfScreen / 5,
@@ -121,7 +121,7 @@ class Note extends StatelessWidget {
                           children: [
                             Text(title!,
                                 style:
-                                const TextStyle(color: descriptionColor)),
+                                    const TextStyle(color: descriptionColor)),
                             Text(description!,
                                 style:
                                     const TextStyle(color: descriptionColor)),
@@ -135,4 +135,3 @@ class Note extends StatelessWidget {
             )));
   }
 }
-
