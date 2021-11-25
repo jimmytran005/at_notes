@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'TextEditor.dart';
+import '../components/TextEditor.dart';
 import 'home.dart';
 
 class TakenoteScreen extends StatelessWidget {
@@ -13,22 +13,22 @@ class TakenoteScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             IconButton(
-              icon:Icon(Icons.menu),
-              onPressed: () { },
+              icon: Icon(Icons.menu),
+              onPressed: () {},
             ),
             IconButton(
-              icon:Icon(Icons.send_to_mobile),
+              icon: Icon(Icons.send_to_mobile),
               onPressed: () {},
             ),
             IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () {  },
+              onPressed: () {},
             ),
           ],
         ),
         //title: Text(widget.title),
-        elevation:4.0,
-        actions:<Widget>[
+        elevation: 4.0,
+        actions: <Widget>[
           Padding(
             padding: EdgeInsets.all(10.0),
             child: TextButton(
@@ -39,8 +39,9 @@ class TakenoteScreen extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => const HomeScreen()),
                   );
                 },
-                style: TextButton.styleFrom(backgroundColor: Colors.white,)
-            ),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white,
+                )),
           ),
         ],
       ),

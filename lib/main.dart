@@ -87,8 +87,10 @@ class _MyAppState extends State<MyApp> {
               ),
               TextButton(
                 onPressed: () async {
-                  KeyChainManager _keyChainManager = KeyChainManager.getInstance();
-                  List<String>? _atSignsList = await _keyChainManager.getAtSignListFromKeychain();
+                  KeyChainManager _keyChainManager =
+                      KeyChainManager.getInstance();
+                  List<String>? _atSignsList =
+                      await _keyChainManager.getAtSignListFromKeychain();
                   if (_atSignsList == null || _atSignsList.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -112,7 +114,7 @@ class _MyAppState extends State<MyApp> {
                     );
                   }
                 },
-                child:const Text(
+                child: const Text(
                   "Reset Keychain",
                   style: TextStyle(color: Colors.blueGrey),
                 ),
