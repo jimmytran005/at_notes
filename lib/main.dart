@@ -12,6 +12,7 @@ import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
 // IMPORTS from screen
 import 'package:at_notes/screens/home.dart';
 import 'package:at_notes/screens/take_note.dart';
+import 'package:at_notes/screens/add_note.dart';
 
 Future<void> main() async {
   await AtEnv.load();
@@ -52,31 +53,71 @@ class _MyAppState extends State<MyApp> {
           title: const Text('MyApp'),
         ),
         body: Builder(
-          builder: (context) => Center(
-            child: ElevatedButton(
-              onPressed: () async {
-                var preference = await futurePreference;
-                setState(() {
-                  atClientPreference = preference;
-                });
-                Onboarding(
-                  context: context,
-                  atClientPreference: atClientPreference!,
-                  domain: AtEnv.rootDomain,
-                  rootEnvironment: AtEnv.rootEnvironment,
-                  appAPIKey: AtEnv.appApiKey,
-                  onboard: (value, atsign) {
-                    _logger.finer('Successfully onboarded $atsign');
+          builder: (context) => Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    var preference = await futurePreference;
+                    setState(() {
+                      atClientPreference = preference;
+                    });
+                    Onboarding(
+                      context: context,
+                      atClientPreference: atClientPreference!,
+                      domain: AtEnv.rootDomain,
+                      rootEnvironment: AtEnv.rootEnvironment,
+                      appAPIKey: AtEnv.appApiKey,
+                      onboard: (value, atsign) {
+                        _logger.finer('Successfully onboarded $atsign');
+                      },
+                      onError: (error) {
+                        _logger.severe('Onboarding throws $error error');
+                      },
+                      nextScreen: const MainWidget(),
+                      // nextScreen: TakenoteScreen(),
+                    );
                   },
-                  onError: (error) {
-                    _logger.severe('Onboarding throws $error error');
-                  },
-                  nextScreen: const MainWidget(),
-                  // nextScreen: TakenoteScreen(),
-                );
-              },
-              child: const Text('Onboard an @sign'),
-            ),
+                  child: const Text('Onboard an @sign'),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                onPressed: () async {
+                  KeyChainManager _keyChainManager = KeyChainManager.getInstance();
+                  List<String>? _atSignsList = await _keyChainManager.getAtSignListFromKeychain();
+                  if (_atSignsList == null || _atSignsList.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          '@sign list is empty.',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  } else {
+                    for (String element in _atSignsList) {
+                      await _keyChainManager.deleteAtSignFromKeychain(element);
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Keychain cleaned',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child:const Text(
+                  "Reset Keychain",
+                  style: TextStyle(color: Colors.blueGrey),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -100,7 +141,7 @@ class MainWidget extends StatelessWidget {
         // When navigating to the "/" route, build the HomeScreen widget.
         '/': (context) => HomeScreen(),
         // When navigating to the "/note" route, build the TakenotesScreen widget.
-        '/note': (context) => TakenoteScreen(),
+        '/note': (context) => AddNote(),
       },
     );
   }

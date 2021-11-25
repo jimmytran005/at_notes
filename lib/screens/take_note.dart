@@ -1,29 +1,54 @@
 import 'package:flutter/material.dart';
+import 'TextEditor.dart';
+import 'home.dart';
 
 class TakenoteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text('my note'),
+        titleSpacing: 0.0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+              icon:Icon(Icons.menu),
+              onPressed: () { },
+            ),
+            IconButton(
+              icon:Icon(Icons.send_to_mobile),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {  },
+            ),
+          ],
+        ),
+        //title: Text(widget.title),
         elevation:4.0,
-        actions:[
-          TextButton(
-            child: Text('Done', style: TextStyle(color: Colors.white)),
-            onPressed: () {  },
+        actions:<Widget>[
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: TextButton(
+                child: Text('save', style: TextStyle(color: Colors.black)),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  );
+                },
+                style: TextButton.styleFrom(backgroundColor: Colors.white,)
+            ),
           ),
         ],
-        leading:
-        IconButton(
-          icon: Icon(Icons.add_box),
-          onPressed: () {  },
-        ),
-
       ),
-      body: Text('This is the note taking screen'),
+      body: Center(
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
+        child: TextEditor(),
+      ),
     );
   }
 }
