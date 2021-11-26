@@ -1,7 +1,10 @@
 import 'package:at_notes/service/client_sdk_service.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
-import 'package:at_notes/model/NoteModel.dart';
+import 'package:at_notes/constants.dart' as constant;
+import 'package:flutter/cupertino.dart';
+import 'package:at_commons/at_commons.dart';
+
 class AddNote extends StatefulWidget {
   Note? note;
 
@@ -13,9 +16,8 @@ class AddNote extends StatefulWidget {
 }
 
 class _AddNoteState extends State<AddNote> {
-  Note? note;
   //_AddNoteState({@required this.note});
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? title;
   String? body;
   DateTime? date;
@@ -67,10 +69,11 @@ class _AddNoteState extends State<AddNote> {
                    date = DateTime.now();
                  });
                  _update(context);
+                 /*
                  Navigator.push(
                    context,
                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                 );
+                 ); */
                },
                style: TextButton.styleFrom(backgroundColor: Colors.white,)
            ),
@@ -108,6 +111,48 @@ class _AddNoteState extends State<AddNote> {
   Future<void> _update(BuildContext context) async{
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
     String? atSign = clientSdkService.atsign;
+
+    FormState? form = _formKey.currentState;
+    if(title!= null && body != null){
+      String _values = body! + constant.splitter + date!.toString();
+      AtKey pair = AtKey();
+      pair.key = title;
+      pair.sharedWith = atSign;
+      bool isPut = await clientSdkService.put(pair, _values);
+      isPut ? Navigator.pop(context)
+            : ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Failed to put data',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+      );
+    }
+
+
+
+    /*
+    if(form!.validate()){
+      String _values = body! + constant.splitter + date!.toString();
+      AtKey atKey = AtKey();
+      atKey.key = title;
+      atKey.sharedWith = atSign;
+
+      bool successPut = await clientSdkService.put(atKey, _values);
+
+      successPut ? Navigator.pop(context)
+          : ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            '           Failed to put data',
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    } else {
+        print('Not all text fields have been completed!');
+    }*/
 
   }
 

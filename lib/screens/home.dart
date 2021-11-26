@@ -1,5 +1,9 @@
+import 'package:at_notes/constants.dart';
+import 'package:at_notes/service/client_sdk_service.dart';
 import 'package:flutter/material.dart';
 import 'package:at_notes/screens/add_note.dart';
+import 'package:at_commons/at_commons.dart';
+import 'package:at_notes/constants.dart' as constant;
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -9,9 +13,68 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Home')),
       // SingleChildScrollView : REFERENCE : https://api.flutter.dev/flutter/widgets/SingleChildScrollView-class.html
-      body: SingleChildScrollView(
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                  child: FutureBuilder<List<String>>(
+                    future: _scan(),
+                    builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.hasData) {
+                        List<String> noteAttributes = snapshot.data;
+                        print(snapshot.data);
+                        List<Note> notes = <Note>[];
+                        for(String attribute in noteAttributes){
+                          List<String> attributesList = attribute.split(constant.splitter);
+                          if(attributesList.length >= 3) {
+                            Note note = Note(
+                                attributesList[0],
+                                attributesList[1],
+                                attributesList[2],
+                                false
+                            );
+                            notes.add(note);
+                          }
+                        }
+                        return SafeArea(
+                          child: ListView(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
+                                  const Text(
+                                    'My Notes',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 32,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ]),
+                              ),
+                              Column(
+                                children: notes,
+                              ),
+                            ],
+                          ),
+                        );
+                      } else if(snapshot.hasError) {
+                        return Text('An error has occured: '+snapshot.error.toString());
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  )),
+            ],
+          ),
+        ),
+      ),
+
+      /*
+      SingleChildScrollView(
         child: Column(
-          children: [
+          children: <Widget>[
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Note(
                   't1',
@@ -69,7 +132,7 @@ class HomeScreen extends StatelessWidget {
             ]),
           ],
         ),
-      ),
+      ),*/
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.pushNamed(context, '/note');
@@ -77,6 +140,37 @@ class HomeScreen extends StatelessWidget {
           child: const Icon(Icons.add)),
     );
   }
+
+  Future<List<String>> _scan() async {
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+
+    List<AtKey> response;
+    response = await clientSdkService.getAtKeys(regex);
+    response.retainWhere((AtKey element) => !element.metadata!.isCached);
+
+    List<String> responseList = <String>[];
+
+    for(AtKey atKey in response){
+      String? value = await _lookup(atKey);
+
+      value = atKey.key! + constant.splitter + value!;
+
+      responseList.add(value);
+      print("Add value " + value + "\n");
+    }
+
+    return responseList;
+  }
+
+  Future<dynamic> _lookup(AtKey? atKey) async {
+    ClientSdkService clientSdkService = ClientSdkService.getInstance();
+    if(atKey != null)
+      return clientSdkService.get(atKey);
+
+    return null;
+  }
+
+
 }
 
 // This will be the note component that will be displayed on the home screen
