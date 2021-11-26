@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
                       if (snapshot.hasData) {
                         List<String> noteAttributes = snapshot.data;
                         print("Printing data: ");
-                        print(snapshot.data);
+                        print(noteAttributes);
                         List<Note> notes = <Note>[];
                         for(String attribute in noteAttributes){
                           List<String> attributesList = attribute.split(constant.splitter);
@@ -146,12 +146,14 @@ class HomeScreen extends StatelessWidget {
 
   Future<List<String>> _scan() async {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
-
+    String? atSign = clientSdkService.atsign;
     List<AtKey> response;
-    response = await clientSdkService.getAtKeys(regex);
-    response.retainWhere((AtKey element) => !element.metadata!.isCached);
+    //response = await clientSdkService.getAtKeys(regex);
+    //response.retainWhere((AtKey element) => !element.metadata!.isCached);
+    response = await clientSdkService.getAtKeys(regex,sharedBy: atSign);
 
     List<String> responseList = <String>[];
+    print("responseList: " + responseList.toString());
     for(AtKey atKey in response){
       String? value = await _lookup(atKey);
 
@@ -168,7 +170,6 @@ class HomeScreen extends StatelessWidget {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
     if(atKey != null)
       return clientSdkService.get(atKey);
-
     return null;
   }
 
