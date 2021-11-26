@@ -6,6 +6,7 @@ import 'package:at_commons/at_commons.dart';
 import 'package:at_notes/constants.dart' as constant;
 
 class HomeScreen extends StatelessWidget {
+
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
@@ -23,6 +24,7 @@ class HomeScreen extends StatelessWidget {
                     builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                       if (snapshot.hasData) {
                         List<String> noteAttributes = snapshot.data;
+                        print("Printing data: ");
                         print(snapshot.data);
                         List<Note> notes = <Note>[];
                         for(String attribute in noteAttributes){
@@ -62,6 +64,7 @@ class HomeScreen extends StatelessWidget {
                       } else if(snapshot.hasError) {
                         return Text('An error has occured: '+snapshot.error.toString());
                       } else {
+                        print("else statement?");
                         return const Center(child: CircularProgressIndicator());
                       }
                     },
@@ -149,7 +152,6 @@ class HomeScreen extends StatelessWidget {
     response.retainWhere((AtKey element) => !element.metadata!.isCached);
 
     List<String> responseList = <String>[];
-
     for(AtKey atKey in response){
       String? value = await _lookup(atKey);
 

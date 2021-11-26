@@ -59,7 +59,7 @@ class ClientSdkService {
     return isDeleted;
   }
 
-  Future<List<AtKey>> getAtKeys(String regex, {String? sharedBy}) async {
+  Future<List<AtKey>> getAtKeys(String? regex, {String? sharedBy}) async {
     return _getAtClientForAtsign()!.getAtKeys(regex: conf.MixedConstants.NAMESPACE, sharedBy: sharedBy);
   }
 
