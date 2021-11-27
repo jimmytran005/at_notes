@@ -8,6 +8,7 @@ import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
+import 'package:at_notes/utils/constants.dart' as constants;
 
 // IMPORTS from screen
 import 'package:at_notes/screens/home.dart';
@@ -21,8 +22,8 @@ Future<void> main() async {
 Future<AtClientPreference> loadAtClientPreference() async {
   var dir = await getApplicationSupportDirectory();
   return AtClientPreference()
-        ..rootDomain = AtEnv.rootDomain
-        ..namespace = AtEnv.appNamespace
+        ..rootDomain = constants.App.rootDomain
+        ..namespace = constants.App.appNamespace
         ..hiveStoragePath = dir.path
         ..commitLogPath = dir.path
         ..isLocalStoreRequired = true
