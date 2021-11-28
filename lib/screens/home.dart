@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:at_notes/screens/add_note.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_notes/constants.dart' as constant;
+import 'package:at_notes/service/at_note_service.dart';
+import 'package:at_notes/model/NoteModel.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -11,6 +13,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AtNoteService service = new AtNoteService();
+
+
     return Scaffold(
       appBar: AppBar(title: Text('Home')),
       // SingleChildScrollView : REFERENCE : https://api.flutter.dev/flutter/widgets/SingleChildScrollView-class.html
@@ -19,14 +24,34 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Expanded(
-                  child: FutureBuilder<List<String>>(
-                    future: _scan(),
+                  child: FutureBuilder<List<NoteModel>>(
+                    //future: _scan(),
+                    future: service.retriveNotes(),
                     builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      print("data: ");
+                      print(snapshot.data);
+                      if(snapshot.data == null){
+                        return Container(
+                          child: Center(
+                            child:Text("Loading...")
+                          )
+                        );
+                      } else {
+                          return ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return ListTile(
+                                title: Text(snapshot.data[index].title),
+                              );
+                            },
+                          );
+                      }
+                    }/*{
                       if (snapshot.hasData) {
                         List<String> noteAttributes = snapshot.data;
                         print("Printing data: ");
                         print(noteAttributes);
-                        List<Note> notes = <Note>[];
+                        List<NoteModel> notes = <NoteModel>[];
                         for(String attribute in noteAttributes){
                           List<String> attributesList = attribute.split(constant.splitter);
                           if(attributesList.length >= 3) {
@@ -67,7 +92,7 @@ class HomeScreen extends StatelessWidget {
                         print("else statement?");
                         return const Center(child: CircularProgressIndicator());
                       }
-                    },
+                    },*/
                   )),
             ],
           ),
@@ -148,9 +173,9 @@ class HomeScreen extends StatelessWidget {
     ClientSdkService clientSdkService = ClientSdkService.getInstance();
     String? atSign = clientSdkService.atsign;
     List<AtKey> response;
-    //response = await clientSdkService.getAtKeys(regex);
-    //response.retainWhere((AtKey element) => !element.metadata!.isCached);
-    response = await clientSdkService.getAtKeys(regex,sharedBy: atSign);
+    response = await clientSdkService.getAtKeys(regex);
+    response.retainWhere((AtKey element) => !element.metadata!.isCached);
+    //response = await clientSdkService.getAtKeys(regex,sharedBy: atSign);
 
     List<String> responseList = <String>[];
     print("responseList: " + responseList.toString());
