@@ -4,6 +4,7 @@ import 'package:at_notes/services/at_note_service.dart';
 import 'package:flutter/material.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_client_mobile/at_client_mobile.dart';
+import '../utils/constants.dart' as constants;
 
 class HomeScreen extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -99,7 +100,6 @@ class _InputFieldState extends State<InputField> {
 
     atKey.key = lookupKey;
     atKey.sharedWith = noteService.getUserAtSign();
-    atKey.namespace = 'at_notes';
 
     // lookups the specifc value, based  on the key
     AtValue val = await _lookup(atKey);
@@ -142,7 +142,9 @@ class _InputFieldState extends State<InputField> {
 
   void deleteAllDataFromDataBase() async {
     List<AtKey> allKeys;
-    allKeys = await AtClientManager.getInstance().atClient.getAtKeys();
+    allKeys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: constants.App.appNamespace);
     // We will loop through the keys and continiously lookup the value based on atKey
     for (int i = 0; i < allKeys.length; i++) {
       await AtClientManager.getInstance().atClient.delete(allKeys[i]);
