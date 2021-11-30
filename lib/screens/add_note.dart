@@ -1,3 +1,4 @@
+import 'package:at_notes/services/at_note_service.dart';
 import 'package:flutter/material.dart';
 import 'home.dart';
 import 'package:at_notes/model/NoteModel.dart';
@@ -14,6 +15,7 @@ class AddNote extends StatefulWidget {
 
 class _AddNoteState extends State<AddNote> {
   Note? note;
+  AtNoteService noteService = AtNoteService();
   //_AddNoteState({@required this.note});
 
   String? title;
@@ -60,16 +62,23 @@ class _AddNoteState extends State<AddNote> {
             padding: EdgeInsets.all(10.0),
             child: TextButton(
                 child: Text('save', style: TextStyle(color: Colors.black)),
-                onPressed: () {
+                onPressed: () async {
                   setState(() {
                     title = titleController.text;
                     body = bodyController.text;
                     date = DateTime.now();
                   });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  );
+                  bool isSuccess = await noteService.saveNote(NoteModel(
+                      title: title!, body: body!, creation_date: date!));
+                  if (isSuccess) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
+                    );
+                  } else {
+                    print('Not able to save note!!');
+                  }
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.white,

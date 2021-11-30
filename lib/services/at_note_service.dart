@@ -9,7 +9,7 @@ class AtNoteService {
       AtClientManager.getInstance().atClient.getCurrentAtSign();
 
   // Function to save the notes into the database
-  Future<bool> saveNote(AtKey noteKey, NoteModel note) async {
+  Future<bool> saveNote(NoteModel note) async {
     AtKey atKey = AtKey();
 
     // Set the AtKey properties
@@ -47,9 +47,8 @@ class AtNoteService {
     for (int i = 0; i < allKeys.length; i++) {
       // Only add the entry to the list if the namespace is correct
       if (allKeys[i].namespace == constants.App.appNamespace) {
-        var retrievedNote = getOneNote(allKeys[i]);
-        var noteContent =
-            retrievedNote.toString().split(constants.App.splitter);
+        var retrievedNote = await getOneNote(allKeys[i]);
+        var noteContent = retrievedNote.value.split(constants.App.splitter);
         var note = NoteModel(
             title: noteContent[0],
             body: noteContent[1],
