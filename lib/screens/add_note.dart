@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'home.dart';
 import 'package:at_notes/model/NoteModel.dart';
 import 'package:at_notes/components/note.dart';
+import 'package:at_commons/at_commons.dart';
 
 class AddNote extends StatefulWidget {
   Note? note;
@@ -47,11 +48,28 @@ class _AddNoteState extends State<AddNote> {
             ),
             IconButton(
               icon: Icon(Icons.send_to_mobile),
-              onPressed: () {},
+              onPressed: () async {
+                // await noteService.clearAllNotes();
+              },
             ),
             IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () {},
+              onPressed: () async {
+                // await noteService.clearAllNotes();
+                AtKey atKey = AtKey();
+                atKey.sharedWith = noteService.getUserAtSign();
+                atKey.key = widget.note!.id;
+                bool isSuccess = await noteService.deleteNote(atKey);
+                if (isSuccess) {
+                  _showToast(context, 'Sucessfully deleted note!');
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()));
+                } else {
+                  _showToast(context, 'Failed to delete note!');
+                }
+              },
             ),
           ],
         ),
@@ -61,23 +79,35 @@ class _AddNoteState extends State<AddNote> {
           Padding(
             padding: EdgeInsets.all(10.0),
             child: TextButton(
-                child: Text('save', style: TextStyle(color: Colors.black)),
+                child:
+                    const Text('save', style: TextStyle(color: Colors.black)),
                 onPressed: () async {
                   setState(() {
                     title = titleController.text;
                     body = bodyController.text;
                     date = DateTime.now();
                   });
-                  bool isSuccess = await noteService.saveNote(NoteModel(
-                      title: title!, body: body!, creation_date: date!));
+
+                  NoteModel noteToSave = NoteModel(
+                      // If it's a preexisting note, get the id of that note, otherwise generate a new UUID for the new note
+                      id: (widget.note == null)
+                          ? noteService.generateTimeBasedUUID()
+                          : widget.note!.id!,
+                      title: title!,
+                      body: body!,
+                      creation_date: date!);
+
+                  bool isSuccess = await noteService.saveNote(noteToSave);
+
                   if (isSuccess) {
+                    _showToast(context, 'Sucessfully Saved note!');
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const HomeScreen()),
                     );
                   } else {
-                    print('Not able to save note!!');
+                    _showToast(context, 'Failed to save note!');
                   }
                 },
                 style: TextButton.styleFrom(
@@ -92,7 +122,7 @@ class _AddNoteState extends State<AddNote> {
           children: [
             TextField(
               controller: titleController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
                 hintText: 'Title',
               ),
@@ -103,7 +133,7 @@ class _AddNoteState extends State<AddNote> {
                 controller: bodyController,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: InputBorder.none,
                   hintText: "note...",
                 ),
@@ -111,6 +141,17 @@ class _AddNoteState extends State<AddNote> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showToast(BuildContext context, String message) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        action: SnackBarAction(
+            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }

@@ -5,12 +5,14 @@ import 'package:at_notes/screens/add_note.dart';
 // ignore: must_be_immutable
 class Note extends StatelessWidget {
   // properties of the note
+  String? id;
   String? title;
   String? description;
   String? date;
   bool? isExpanded;
 
-  Note(this.title, this.description, this.date, this.isExpanded, {Key? key})
+  Note(this.id, this.title, this.description, this.date, this.isExpanded,
+      {Key? key})
       : super(key: key);
 
   @override

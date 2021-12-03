@@ -1,6 +1,7 @@
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_notes/model/NoteModel.dart';
+import 'package:uuid/uuid.dart';
 import 'package:at_notes/utils/constants.dart' as constants;
 
 // This class implements all of the methods used for the backend operations
@@ -13,8 +14,8 @@ class AtNoteService {
     AtKey atKey = AtKey();
 
     // Set the AtKey properties
-    atKey.key = note.title;
-    atKey.sharedWith = atSign;
+    atKey.key = note.id;
+    atKey.sharedWith = getUserAtSign();
 
     // Set the value string
     String value = note.title +
@@ -50,6 +51,7 @@ class AtNoteService {
         var retrievedNote = await getOneNote(allKeys[i]);
         var noteContent = retrievedNote.value.split(constants.App.splitter);
         var note = NoteModel(
+            id: allKeys[i].key!,
             title: noteContent[0],
             body: noteContent[1],
             creation_date: DateTime.parse(noteContent[2]));
@@ -75,4 +77,22 @@ class AtNoteService {
   String getUserAtSign() {
     return atSign!;
   }
+
+  // Function to generate time based uuid to uniquely identify a note
+  String generateTimeBasedUUID() {
+    return const Uuid().v1();
+  }
+
+  // Function to delete all notes -- FOR DEBUGGING/DEVELOPMENT USE ONLY
+  Future<void> clearAllNotes() async {
+    List<AtKey> allKeys;
+    allKeys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: constants.App.appNamespace);
+
+    for (int i = 0; i < allKeys.length; i++) {
+      await deleteNote(allKeys[i]);
+    }
+  }
+  // Need functions to shareNote(), retrieveSharedNotes()
 }
