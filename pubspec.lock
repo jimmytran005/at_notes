@@ -72,7 +72,7 @@ packages:
     source: hosted
     version: "3.0.4"
   at_client_mobile:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: at_client_mobile
       url: "https://pub.dartlang.org"

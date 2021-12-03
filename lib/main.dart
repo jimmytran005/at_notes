@@ -8,10 +8,10 @@ import 'package:at_utils/at_logger.dart' show AtSignLogger;
 import 'package:path_provider/path_provider.dart'
     show getApplicationSupportDirectory;
 import 'package:at_app_flutter/at_app_flutter.dart' show AtEnv;
+import 'package:at_notes/utils/constants.dart' as constants;
 
 // IMPORTS from screen
 import 'package:at_notes/screens/home.dart';
-import 'package:at_notes/screens/take_note.dart';
 import 'package:at_notes/screens/add_note.dart';
 
 Future<void> main() async {
@@ -22,8 +22,8 @@ Future<void> main() async {
 Future<AtClientPreference> loadAtClientPreference() async {
   var dir = await getApplicationSupportDirectory();
   return AtClientPreference()
-        ..rootDomain = AtEnv.rootDomain
-        ..namespace = AtEnv.appNamespace
+        ..rootDomain = constants.App.rootDomain
+        ..namespace = constants.App.appNamespace
         ..hiveStoragePath = dir.path
         ..commitLogPath = dir.path
         ..isLocalStoreRequired = true
@@ -76,7 +76,6 @@ class _MyAppState extends State<MyApp> {
                         _logger.severe('Onboarding throws $error error');
                       },
                       nextScreen: const MainWidget(),
-                      // nextScreen: TakenoteScreen(),
                     );
                   },
                   child: const Text('Onboard an @sign'),
@@ -87,8 +86,10 @@ class _MyAppState extends State<MyApp> {
               ),
               TextButton(
                 onPressed: () async {
-                  KeyChainManager _keyChainManager = KeyChainManager.getInstance();
-                  List<String>? _atSignsList = await _keyChainManager.getAtSignListFromKeychain();
+                  KeyChainManager _keyChainManager =
+                      KeyChainManager.getInstance();
+                  List<String>? _atSignsList =
+                      await _keyChainManager.getAtSignListFromKeychain();
                   if (_atSignsList == null || _atSignsList.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -112,7 +113,7 @@ class _MyAppState extends State<MyApp> {
                     );
                   }
                 },
-                child:const Text(
+                child: const Text(
                   "Reset Keychain",
                   style: TextStyle(color: Colors.blueGrey),
                 ),
