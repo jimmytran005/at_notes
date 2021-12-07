@@ -94,5 +94,33 @@ class AtNoteService {
       await deleteNote(allKeys[i]);
     }
   }
+
+  // Function to share a note with someone - NOT DONE
+  Future<bool> shareNote(NoteModel note, String sharedWith) async {
+    String? atSign = AtClientManager.getInstance().atClient.getCurrentAtSign();
+
+    // Prepare AtKey for look up
+    AtKey lookup = AtKey()
+      ..key = note.id
+      ..sharedWith = atSign;
+
+    // Lookup note and get the value of it
+    String value =
+        (await AtClientManager.getInstance().atClient.get(lookup)).value;
+
+    // Metadata metadata = Metadata()..ttr = 1;
+
+    // Prepare AtKey to save for this specific note
+    AtKey atKey = AtKey()
+      ..key = note.id
+      ..sharedBy = atSign
+      ..sharedWith = sharedWith;
+
+    bool isSuccess =
+        await AtClientManager.getInstance().atClient.put(atKey, value);
+
+    return isSuccess;
+  }
+
   // Need functions to shareNote(), retrieveSharedNotes()
 }

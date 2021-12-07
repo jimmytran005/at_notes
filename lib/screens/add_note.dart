@@ -26,6 +26,8 @@ class _AddNoteState extends State<AddNote> {
   TextEditingController titleController = TextEditingController();
   TextEditingController bodyController = TextEditingController();
 
+  TextEditingController sharedWithController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     if (widget.note != null) {
@@ -49,6 +51,70 @@ class _AddNoteState extends State<AddNote> {
             IconButton(
               icon: Icon(Icons.send_to_mobile),
               onPressed: () async {
+                // This is a modal that will pop up to prompt the user if they want to share their notes with someone
+                // REFERENCE: https://api.flutter.dev/flutter/material/showModalBottomSheet.html
+                showModalBottomSheet<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      height: 200,
+                      color: Colors.grey,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text('Share your note with someone'),
+                            TextField(
+                              controller: sharedWithController,
+                            ),
+                            Row(children: [
+                              ElevatedButton(
+                                child: const Text('Cancel'),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                              ElevatedButton(
+                                  child: const Text('Share'),
+                                  onPressed: () async {
+                                    // noteService.shareNote(note, sharedWithController.text)
+                                    print(widget.note!.title);
+
+                                    if (widget.note != null &&
+                                        sharedWithController.text != '') {
+                                      String userToShareWith =
+                                          sharedWithController.text;
+                                      Note savedNote = widget.note!;
+                                      NoteModel noteModel = NoteModel(
+                                          id: savedNote.id!,
+                                          title: savedNote.title!,
+                                          body: savedNote.description!,
+                                          creation_date:
+                                              DateTime.parse(savedNote.date!));
+                                      bool isSuccess =
+                                          await noteService.shareNote(
+                                              noteModel, userToShareWith);
+                                      if (isSuccess) {
+                                        _showToast(context,
+                                            'Sucessfully shared with $userToShareWith');
+                                        Navigator.pop(context);
+                                      } else {
+                                        _showToast(context,
+                                            'Failed to share with $userToShareWith');
+                                        Navigator.pop(context);
+                                      }
+                                    } else {
+                                      print(
+                                          'CANNOT SHARE this note until saved');
+                                    }
+                                  })
+                            ])
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+                // noteService.shareNote(note, sharedWith)
                 // await noteService.clearAllNotes();
               },
             ),
@@ -151,7 +217,7 @@ class _AddNoteState extends State<AddNote> {
       SnackBar(
         content: Text(message),
         action: SnackBarAction(
-            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+            label: 'DONE', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
   }
