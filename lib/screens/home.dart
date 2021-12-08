@@ -22,11 +22,17 @@ class HomeScreen extends StatelessWidget {
             for (int i = 0; i < notesList.length; i += 2) {
               List<Widget> rowChildren = <Widget>[];
 
+              String convertDateTime = "${notesList[i].creation_date.year.toString()}"
+                  "-${notesList[i].creation_date.month.toString().padLeft(2,'0')}"
+                  "-${notesList[i].creation_date.day.toString().padLeft(2,'0')} "
+                  "${notesList[i].creation_date.hour.toString().padLeft(2,'0')}"
+                  ":${notesList[i].creation_date.minute.toString().padLeft(2,'0')}";
+
               rowChildren.add(Note(
                   notesList[i].id,
                   notesList[i].title,
                   notesList[i].body,
-                  notesList[i].creation_date.toString(),
+                  convertTime(notesList[i].creation_date),
                   ((i + 1) == notesList.length) ? true : false));
 
               // If the next index exists
@@ -35,7 +41,8 @@ class HomeScreen extends StatelessWidget {
                     notesList[i + 1].id,
                     notesList[i + 1].title,
                     notesList[i + 1].body,
-                    notesList[i + 1].creation_date.toString(),
+                    //notesList[i + 1].creation_date.toString(),
+                    convertTime(notesList[i+1].creation_date),
                     false));
               }
 
@@ -47,6 +54,8 @@ class HomeScreen extends StatelessWidget {
               listsOfRow.add(row);
             }
             return Column(children: listsOfRow);
+
+
           } else if (snapshot.hasError) {
             return Text('Error');
           } else {
@@ -66,5 +75,13 @@ class HomeScreen extends StatelessWidget {
     AtNoteService atNoteService = AtNoteService();
     List<NoteModel> listOfNotes = await atNoteService.retriveNotes();
     return listOfNotes;
+  }
+
+  String convertTime(DateTime now){
+
+    return "${now.year.toString()}"
+        "-${now.month.toString().padLeft(2,'0')}"
+        "-${now.day.toString().padLeft(2,'0')} ${now.hour.toString().padLeft(2,'0')}"
+        ":${now.minute.toString().padLeft(2,'0')}";
   }
 }
