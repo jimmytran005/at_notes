@@ -53,8 +53,11 @@ class AtNoteService {
       // Only add the entry to the list if the namespace is correct
       if (allKeys[i].namespace == constants.App.appNamespace) {
 
+        print(allKeys[i].sharedBy);
+        print("\n");
 
-        if(allKeys[i].sharedBy == atSign){continue;}
+        //if("@${allKeys[i].sharedBy}" == atSign){continue;}
+
 
         var retrievedNote = await getOneNote(allKeys[i]);
         var noteContent = retrievedNote.value.split(constants.App.splitter);
@@ -122,10 +125,11 @@ class AtNoteService {
       ..key = note.id
       ..sharedBy = atSign
       ..sharedWith = sharedWith;
-    //bool isSuccess =
-    // await AtClientManager.getInstance().atClient.put(atKey, value);
-    // return isSuccess;
+    bool isSuccess =
+     await AtClientManager.getInstance().atClient.put(atKey, value);
+     return isSuccess;
 
+/*
     try{
       await AtClientManager.getInstance().notificationService.notify(
         NotificationParams.forUpdate(
@@ -141,7 +145,7 @@ class AtNoteService {
       print('Exception : $e');
       return false;
     }
-
+*/
   }
 
   // Need functions to shareNote(), retrieveSharedNotes()
