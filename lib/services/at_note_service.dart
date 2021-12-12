@@ -42,8 +42,9 @@ class AtNoteService {
     List<AtKey> allKeys;
     allKeys = await AtClientManager.getInstance()
         .atClient
-        //.getAtKeys(regex:'cached.*notes');
         .getAtKeys(regex: constants.App.appNamespace);//, sharedBy: );
+
+    //.getAtKeys(regex:'cached.*notes');
     // List of NoteModels that is retrieved
     List<NoteModel> retrievedNotes = <NoteModel>[];
 
