@@ -6,9 +6,6 @@ import 'package:at_notes/utils/constants.dart' as constants;
 
 // This class implements all of the methods used for the backend operations
 class AtNoteService {
-  static final String? atSign =
-      AtClientManager.getInstance().atClient.getCurrentAtSign();
-
   // Function to save the notes into the database
   Future<bool> saveNote(NoteModel note) async {
     AtKey atKey = AtKey();
@@ -16,6 +13,7 @@ class AtNoteService {
     // Set the AtKey properties
     atKey.key = note.id;
     atKey.sharedWith = getUserAtSign();
+    atKey.sharedBy = getUserAtSign();
 
     // Set the value string
     String value = note.title +
@@ -35,6 +33,7 @@ class AtNoteService {
   // Function to retrieve the notes from the database
   // Return - a list of NoteModels
   Future<List<NoteModel>> retriveNotes() async {
+    print('Atclient ' + getUserAtSign());
     // Get all the keys from secondary server
     List<AtKey> allKeys;
     allKeys = await AtClientManager.getInstance()
@@ -46,19 +45,27 @@ class AtNoteService {
 
     // We will loop through the keys and continiously lookup the value based on atKey
     for (int i = 0; i < allKeys.length; i++) {
+      print("THE KEY " + allKeys[i].toString());
       // Only add the entry to the list if the namespace is correct
-      if (allKeys[i].namespace == constants.App.appNamespace) {
-        var retrievedNote = await getOneNote(allKeys[i]);
-        var noteContent = retrievedNote.value.split(constants.App.splitter);
-        var note = NoteModel(
-            id: allKeys[i].key!,
-            title: noteContent[0],
-            body: noteContent[1],
-            creation_date: DateTime.parse(noteContent[2]));
-        retrievedNotes.add(note);
+      String? atSignFormatted = formatAtsign(
+          AtClientManager.getInstance().atClient.getCurrentAtSign());
+      String? atSignSharedWith = formatAtsign(allKeys[i].sharedWith);
+
+      if (atSignFormatted! != atSignSharedWith!) {
+        continue;
       }
+
+      var retrievedNote = await getOneNote(allKeys[i]);
+      var noteContent = retrievedNote.value.split(constants.App.splitter);
+      var note = NoteModel(
+          id: allKeys[i].key!,
+          title: noteContent[0],
+          body: noteContent[1],
+          creation_date: DateTime.parse(noteContent[2]));
+      retrievedNotes.add(note);
     }
 
+    print('retrievedNotes ' + retrievedNotes.toString());
     return retrievedNotes;
   }
 
@@ -75,6 +82,8 @@ class AtNoteService {
 
   // Function to get the current user's AtSign
   String getUserAtSign() {
+    String? atSign = AtClientManager.getInstance().atClient.getCurrentAtSign();
+
     return atSign!;
   }
 
@@ -102,7 +111,11 @@ class AtNoteService {
     // Prepare AtKey for look up
     AtKey lookup = AtKey()
       ..key = note.id
-      ..sharedWith = atSign;
+      ..sharedWith = atSign
+      ..sharedBy = atSign!.replaceAll("@", "")
+      ..namespace = constants.App.appNamespace;
+
+    print(lookup);
 
     // Lookup note and get the value of it
     String value =
@@ -122,5 +135,44 @@ class AtNoteService {
     return isSuccess;
   }
 
-  // Need functions to shareNote(), retrieveSharedNotes()
+  String? formatAtsign(String? atSign) {
+    return atSign?.trim().replaceFirst("@", "");
+  }
+
+  Future<List<NoteModel>> retrieveSharedNotes() async {
+    print('Atclient ' + getUserAtSign());
+    // Get all the keys from secondary server
+    List<AtKey> allKeys;
+    allKeys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: constants.App.appNamespace);
+
+    // List of NoteModels that is retrieved
+    List<NoteModel> retrievedNotes = <NoteModel>[];
+
+    // We will loop through the keys and continiously lookup the value based on atKey
+    for (int i = 0; i < allKeys.length; i++) {
+      print("THE KEY " + allKeys[i].toString());
+      // Only add the entry to the list if the namespace is correct
+      String? atSignFormatted = formatAtsign(
+          AtClientManager.getInstance().atClient.getCurrentAtSign());
+      String? atSignSharedWith = formatAtsign(allKeys[i].sharedWith);
+
+      if (atSignFormatted! == atSignSharedWith!) {
+        continue;
+      }
+
+      var retrievedNote = await getOneNote(allKeys[i]);
+      var noteContent = retrievedNote.value.split(constants.App.splitter);
+      var note = NoteModel(
+          id: allKeys[i].key!,
+          title: noteContent[0],
+          body: noteContent[1],
+          creation_date: DateTime.parse(noteContent[2]));
+      retrievedNotes.add(note);
+    }
+    return retrievedNotes;
+  }
+
+  // Need functions retrievedNotesSharedToMe()
 }

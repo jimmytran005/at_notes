@@ -46,7 +46,10 @@ class _AddNoteState extends State<AddNote> {
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.menu),
-              onPressed: () {},
+              onPressed: () {
+                // TESTING....  retrieveSharedNotes() to see the shared instances
+                noteService.retrieveSharedNotes();
+              },
             ),
             IconButton(
               icon: Icon(Icons.send_to_mobile),
