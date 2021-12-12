@@ -96,6 +96,7 @@ class _AddNoteState extends State<AddNote> {
                                       bool isSuccess =
                                           await noteService.shareNote(
                                               noteModel, userToShareWith);
+
                                       if (isSuccess) {
                                         _showToast(context,
                                             'Sucessfully shared with $userToShareWith');
@@ -131,10 +132,12 @@ class _AddNoteState extends State<AddNote> {
                 bool isSuccess = await noteService.deleteNote(atKey);
                 if (isSuccess) {
                   _showToast(context, 'Sucessfully deleted note!');
+                  Navigator.pop(context);
+                  /*
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const HomeScreen()));
+                          builder: (context) => const HomeScreen()));*/
                 } else {
                   _showToast(context, 'Failed to delete note!');
                 }
