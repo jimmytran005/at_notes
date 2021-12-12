@@ -143,6 +143,7 @@ class MainWidget extends StatelessWidget {
         '/': (context) => HomeScreen(),
         // When navigating to the "/note" route, build the TakenotesScreen widget.
         '/note': (context) => AddNote(),
+        
       },
     );
   }

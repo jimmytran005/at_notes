@@ -1,6 +1,9 @@
 import 'package:at_client_mobile/at_client_mobile.dart';
+import 'package:at_client/src/service/notification_service.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_notes/model/NoteModel.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 import 'package:at_notes/utils/constants.dart' as constants;
 
@@ -39,8 +42,8 @@ class AtNoteService {
     List<AtKey> allKeys;
     allKeys = await AtClientManager.getInstance()
         .atClient
-        .getAtKeys(regex: constants.App.appNamespace);
-
+        //.getAtKeys(regex:'cached.*notes');
+        .getAtKeys(regex: constants.App.appNamespace);//, sharedBy: );
     // List of NoteModels that is retrieved
     List<NoteModel> retrievedNotes = <NoteModel>[];
 
@@ -48,6 +51,10 @@ class AtNoteService {
     for (int i = 0; i < allKeys.length; i++) {
       // Only add the entry to the list if the namespace is correct
       if (allKeys[i].namespace == constants.App.appNamespace) {
+
+
+        if(allKeys[i].sharedBy == atSign){continue;}
+
         var retrievedNote = await getOneNote(allKeys[i]);
         var noteContent = retrievedNote.value.split(constants.App.splitter);
         var note = NoteModel(
@@ -108,18 +115,32 @@ class AtNoteService {
     String value =
         (await AtClientManager.getInstance().atClient.get(lookup)).value;
 
-    // Metadata metadata = Metadata()..ttr = 1;
 
     // Prepare AtKey to save for this specific note
     AtKey atKey = AtKey()
       ..key = note.id
       ..sharedBy = atSign
       ..sharedWith = sharedWith;
+    //bool isSuccess =
+    // await AtClientManager.getInstance().atClient.put(atKey, value);
+    // return isSuccess;
 
-    bool isSuccess =
-        await AtClientManager.getInstance().atClient.put(atKey, value);
+    try{
+      await AtClientManager.getInstance().notificationService.notify(
+        NotificationParams.forUpdate(
+          atKey,
+          value: value,
+        ),
+      );
+      return true;
+    } on AtClientException catch (e) {
+      print('AtClientException : ${e.errorCode} - ${e.errorMessage}');
+      return false;
+    } catch (e) {
+      print('Exception : $e');
+      return false;
+    }
 
-    return isSuccess;
   }
 
   // Need functions to shareNote(), retrieveSharedNotes()
