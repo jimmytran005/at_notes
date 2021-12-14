@@ -44,13 +44,7 @@ class _AddNoteState extends State<AddNote> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                // TESTING....  retrieveSharedNotes() to see the shared instances
-                noteService.retrieveSharedNotes();
-              },
-            ),
+
             IconButton(
               icon: Icon(Icons.send_to_mobile),
               onPressed: () async {

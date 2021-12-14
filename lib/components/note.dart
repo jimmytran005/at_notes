@@ -37,15 +37,17 @@ class Note extends StatelessWidget {
               width: widthOfScreen / (isExpanded! ? 1.1 : 2.4),
               height: heightOfScreen / 5,
               child: Card(
-                  color: backgroundColor,
+                  //color: backgroundColor,
+                  color: Colors.grey[300],
                   child: Padding(
                       padding: const EdgeInsets.all(15),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
                           children: [
                             Text(title!,
                                 style:
-                                    const TextStyle(color: descriptionColor)),
+                                    const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold,color: descriptionColor)),
                             Text(description!,
                                 style:
                                     const TextStyle(color: descriptionColor)),
