@@ -195,7 +195,7 @@ class AtNoteService {
     // Get all the keys from secondary server
     List<AtKey> allKeys;
 
-    if (formatAtsign(getUserAtSign()) == "@blackpantherfun") {
+    if (formatAtsign(getUserAtSign()) == "blackpantherfun") {
       allKeys = await AtClientManager.getInstance().atClient.getAtKeys(
           regex: constants.App.appNamespace, sharedBy: "elegantfrog72");
     } else {
