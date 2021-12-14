@@ -52,7 +52,6 @@ class AtNoteService {
       print("THE KEY " + allKeys[i].toString());
       // Only add the entry to the list if the namespace is correct
 
-
       String? atSignFormatted = formatAtsign(
           AtClientManager.getInstance().atClient.getCurrentAtSign());
       String? atSignSharedWith = formatAtsign(allKeys[i].sharedWith);
@@ -67,7 +66,9 @@ class AtNoteService {
           id: allKeys[i].key!,
           title: noteContent[0],
           body: noteContent[1],
-          creation_date: DateTime.parse(noteContent[2]));
+          creation_date: DateTime.parse(noteContent[2]),
+          sharedWith: allKeys[i].sharedWith!,
+          isShared: false);
       retrievedNotes.add(note);
     }
 
@@ -77,8 +78,33 @@ class AtNoteService {
 
   // Function to delete the note based on the atKey
   // Wil return a Future<bool> that will determine if the deletion was a success or not
-  Future<bool> deleteNote(AtKey atKey) async {
-    return await AtClientManager.getInstance().atClient.delete(atKey);
+  Future<bool> deleteNote(AtKey atKey, [bool isShared = false]) async {
+    print("deleteNote atkey:" +
+        atKey.toString() +
+        " isShared:" +
+        isShared.toString());
+    // If it is a shared note, then we want to just delete that note
+    if (isShared) {
+      return await AtClientManager.getInstance().atClient.delete(atKey);
+    } else {
+      try {
+        // Delete all notes that are shared with users
+        List<AtKey> allKeys;
+        allKeys = await AtClientManager.getInstance()
+            .atClient
+            .getAtKeys(regex: constants.App.appNamespace); //, sharedBy: );
+
+        for (int i = 0; i < allKeys.length; i++) {
+          if (allKeys[i].key == atKey.key) {
+            print("KEYS ARE EQUAL");
+            await AtClientManager.getInstance().atClient.delete(allKeys[i]);
+          }
+        }
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
   }
 
   // GET look up the value based on the atKey
@@ -112,29 +138,34 @@ class AtNoteService {
 
   // Function to share a note with someone - NOT DONE
   Future<bool> shareNote(NoteModel note, String sharedWith) async {
-    String? atSign = AtClientManager.getInstance().atClient.getCurrentAtSign();
+    try {
+      String? atSign =
+          AtClientManager.getInstance().atClient.getCurrentAtSign();
 
-    // Prepare AtKey for look up
-    AtKey lookup = AtKey()
-      ..key = note.id
-      ..sharedWith = atSign
-      ..sharedBy = atSign!.replaceAll("@", "")
-      ..namespace = constants.App.appNamespace;
+      // Prepare AtKey for look up
+      AtKey lookup = AtKey()
+        ..key = note.id
+        ..sharedWith = atSign
+        ..sharedBy = atSign!.replaceAll("@", "")
+        ..namespace = constants.App.appNamespace;
 
-    print(lookup);
+      print(lookup);
 
-    // Lookup note and get the value of it
-    String value =
-        (await AtClientManager.getInstance().atClient.get(lookup)).value;
+      // Lookup note and get the value of it
+      String value =
+          (await AtClientManager.getInstance().atClient.get(lookup)).value;
 
-    // Prepare AtKey to save for this specific note
-    AtKey atKey = AtKey()
-      ..key = note.id
-      ..sharedBy = atSign
-      ..sharedWith = sharedWith;
-   bool isSuccess =
-        await AtClientManager.getInstance().atClient.put(atKey, value);
-    return isSuccess;
+      // Prepare AtKey to save for this specific note
+      AtKey atKey = AtKey()
+        ..key = note.id
+        ..sharedBy = atSign
+        ..sharedWith = sharedWith;
+      bool isSuccess =
+          await AtClientManager.getInstance().atClient.put(atKey, value);
+      return isSuccess;
+    } catch (e) {
+      return false;
+    }
 
 /*
     try{
@@ -164,24 +195,22 @@ class AtNoteService {
     // Get all the keys from secondary server
     List<AtKey> allKeys;
 
-    if(formatAtsign(getUserAtSign()) == "@blackpantherfun"){
-      allKeys = await AtClientManager.getInstance()
-          .atClient
-          .getAtKeys(regex: constants.App.appNamespace, sharedBy: "elegantfrog72");
-    }
-    else{
+    if (formatAtsign(getUserAtSign()) == "@blackpantherfun") {
+      allKeys = await AtClientManager.getInstance().atClient.getAtKeys(
+          regex: constants.App.appNamespace, sharedBy: "elegantfrog72");
+    } else {
       allKeys = await AtClientManager.getInstance()
           .atClient
           .getAtKeys(regex: constants.App.appNamespace);
     }
 
-
     // List of NoteModels that is retrieved
     List<NoteModel> retrievedNotes = <NoteModel>[];
 
     // We will loop through the keys and continiously lookup the value based on atKey
+    print("\n");
     for (int i = 0; i < allKeys.length; i++) {
-      print("THE KEY " + allKeys[i].toString());
+      print("THE KEY FROM SHARED RETRIEVAL " + allKeys[i].toString());
       // Only add the entry to the list if the namespace is correct
       String? atSignFormatted = formatAtsign(
           AtClientManager.getInstance().atClient.getCurrentAtSign());
@@ -197,9 +226,12 @@ class AtNoteService {
           id: allKeys[i].key!,
           title: noteContent[0],
           body: noteContent[1],
-          creation_date: DateTime.parse(noteContent[2]));
+          creation_date: DateTime.parse(noteContent[2]),
+          sharedWith: allKeys[i].sharedWith!,
+          isShared: true);
       retrievedNotes.add(note);
     }
+
     return retrievedNotes;
   }
 

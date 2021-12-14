@@ -44,7 +44,14 @@ class _AddNoteState extends State<AddNote> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-
+            IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                // TESTING....  retrieveSharedNotes() to see the shared instances
+                // noteService.retrieveSharedNotes();
+                // noteService.clearAllNotes();
+              },
+            ),
             IconButton(
               icon: Icon(Icons.send_to_mobile),
               onPressed: () async {
@@ -86,7 +93,9 @@ class _AddNoteState extends State<AddNote> {
                                           title: savedNote.title!,
                                           body: savedNote.description!,
                                           creation_date:
-                                              DateTime.parse(savedNote.date!));
+                                              DateTime.parse(savedNote.date!),
+                                          sharedWith: widget.note!.sharedWith!,
+                                          isShared: false);
                                       bool isSuccess =
                                           await noteService.shareNote(
                                               noteModel, userToShareWith);
@@ -97,7 +106,8 @@ class _AddNoteState extends State<AddNote> {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                                builder: (context) => const HomeScreen()));
+                                                builder: (context) =>
+                                                    const HomeScreen()));
                                       } else {
                                         _showToast(context,
                                             'Failed to share with $userToShareWith');
@@ -124,12 +134,13 @@ class _AddNoteState extends State<AddNote> {
               onPressed: () async {
                 // await noteService.clearAllNotes();
                 AtKey atKey = AtKey();
-                atKey.sharedWith = noteService.getUserAtSign();
+                atKey.sharedWith = widget.note!.sharedWith!;
                 atKey.key = widget.note!.id;
-                bool isSuccess = await noteService.deleteNote(atKey);
+                bool isSuccess =
+                    await noteService.deleteNote(atKey, widget.note!.isShared!);
                 if (isSuccess) {
                   _showToast(context, 'Sucessfully deleted note!');
-                  //Navigator.pop(context);
+                  // Navigator.pop(context);
 
                   Navigator.push(
                       context,
@@ -164,7 +175,11 @@ class _AddNoteState extends State<AddNote> {
                           : widget.note!.id!,
                       title: title!,
                       body: body!,
-                      creation_date: date!);
+                      creation_date: date!,
+                      sharedWith: (widget.note == null)
+                          ? noteService.getUserAtSign()
+                          : widget.note!.sharedWith!,
+                      isShared: false);
 
                   bool isSuccess = await noteService.saveNote(noteToSave);
 
