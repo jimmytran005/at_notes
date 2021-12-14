@@ -12,11 +12,13 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       drawer: NavigationDrawerWidget(),
 
-      appBar: AppBar(title: Text('Home'),),
+      appBar: AppBar(
+        title: Text('Home'),
+      ),
       // SingleChildScrollView : REFERENCE : https://api.flutter.dev/flutter/widgets/SingleChildScrollView-class.html
 
-     body: SingleChildScrollView(
-         child: FutureBuilder<List<NoteModel>>(
+      body: SingleChildScrollView(
+          child: FutureBuilder<List<NoteModel>>(
         future: _scan(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
@@ -31,7 +33,9 @@ class HomeScreen extends StatelessWidget {
                   notesList[i].title,
                   notesList[i].body,
                   notesList[i].creation_date.toString(),
-                  ((i + 1) == notesList.length) ? true : false));
+                  notesList[i].sharedWith,
+                  ((i + 1) == notesList.length) ? true : false,
+                  false));
 
               // If the next index exists
               if ((i + 1) < notesList.length) {
@@ -40,9 +44,10 @@ class HomeScreen extends StatelessWidget {
                     notesList[i + 1].title,
                     notesList[i + 1].body,
                     notesList[i + 1].creation_date.toString(),
+                    notesList[i + 1].sharedWith,
+                    notesList[i + 1].isShared,
                     false));
               }
-
               var row = Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: rowChildren);
@@ -63,7 +68,6 @@ class HomeScreen extends StatelessWidget {
             Navigator.pushNamed(context, '/note');
           },
           child: const Icon(Icons.add)),
-
     );
   }
 
@@ -74,59 +78,58 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class NavigationDrawerWidget extends StatelessWidget{
+class NavigationDrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final padding = EdgeInsets.symmetric(horizontal: 20);
     return Drawer(
-      child: Material(
-        color: Colors.blue,
-        child: ListView(
-            padding: padding,
-            children: <Widget>[
-              const SizedBox(height: 48),
-              buildMenuItem(
-                text: 'Shared Notes',
-                icon: Icons.people_alt_outlined,
-                onClicked: () => selectedItem(context, 0),
-              ),
-              const SizedBox(height: 16),
-              buildMenuItem(
-                text: 'Favourites',
-                icon: Icons.favorite_border,
-              ),
-              const SizedBox(height: 16),
-              buildMenuItem(
-                text: 'Recent Delete',
-                icon: Icons.delete_forever_outlined,
-              ),
-            ],
+        child: Material(
+      color: Colors.blue,
+      child: ListView(
+        padding: padding,
+        children: <Widget>[
+          const SizedBox(height: 48),
+          buildMenuItem(
+            text: 'Shared Notes',
+            icon: Icons.people_alt_outlined,
+            onClicked: () => selectedItem(context, 0),
           ),
-        )
-      );
+          const SizedBox(height: 16),
+          buildMenuItem(
+            text: 'Favourites',
+            icon: Icons.favorite_border,
+          ),
+          const SizedBox(height: 16),
+          buildMenuItem(
+            text: 'Recent Delete',
+            icon: Icons.delete_forever_outlined,
+          ),
+        ],
+      ),
+    ));
   }
 
-    Widget buildMenuItem({
+  Widget buildMenuItem({
     required String text,
     required IconData icon,
     VoidCallback? onClicked,
-    }){
-      final color = Colors.white;
-      final hoverColor = Colors.white70;
-      return ListTile(
-        leading: Icon(icon, color: color),
-        title: Text(text, style: TextStyle(fontSize: 20, color: color)),
-        hoverColor: hoverColor,
-        onTap: onClicked,
-      );
-    }
-    void selectedItem(BuildContext context, int index){
-      switch (index){
-        case 0:
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => SharedPage()));
-          break;
-      }
-    }
+  }) {
+    final color = Colors.white;
+    final hoverColor = Colors.white70;
+    return ListTile(
+      leading: Icon(icon, color: color),
+      title: Text(text, style: TextStyle(fontSize: 20, color: color)),
+      hoverColor: hoverColor,
+      onTap: onClicked,
+    );
+  }
 
+  void selectedItem(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => SharedPage()));
+        break;
+    }
+  }
 }

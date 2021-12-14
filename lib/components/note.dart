@@ -9,9 +9,12 @@ class Note extends StatelessWidget {
   String? title;
   String? description;
   String? date;
+  String? sharedWith;
+  bool? isShared;
   bool? isExpanded;
 
-  Note(this.id, this.title, this.description, this.date, this.isExpanded,
+  Note(this.id, this.title, this.description, this.date, this.sharedWith,
+      this.isExpanded, this.isShared,
       {Key? key})
       : super(key: key);
 
@@ -53,8 +56,20 @@ class Note extends StatelessWidget {
                                 width: MediaQuery.of(context)
                                     .size
                                     .width, // will make the size of the sizedBox to be 100% of the parent component
-                                child: Text(date!,
-                                    style: const TextStyle(color: dateColor)))
+                                child: !isShared!
+                                    ? Text(date!,
+                                        style:
+                                            const TextStyle(color: dateColor))
+                                    : Column(
+                                        children: [
+                                          Text(date!,
+                                              style: const TextStyle(
+                                                  color: dateColor)),
+                                          Text("Shared to: " + sharedWith!,
+                                              style: const TextStyle(
+                                                  color: dateColor))
+                                        ],
+                                      ))
                           ]))),
             )));
   }
