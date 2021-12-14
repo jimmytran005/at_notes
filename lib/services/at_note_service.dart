@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_client/src/service/notification_service.dart';
 import 'package:at_commons/at_commons.dart';
@@ -156,8 +158,11 @@ class AtNoteService {
           (await AtClientManager.getInstance().atClient.get(lookup)).value;
 
       // Prepare AtKey to save for this specific note
+      Metadata metadata = Metadata()..ttr = 1;
+
       AtKey atKey = AtKey()
         ..key = note.id
+        ..metadata = metadata
         ..sharedBy = atSign
         ..sharedWith = sharedWith;
       bool isSuccess =
@@ -233,6 +238,40 @@ class AtNoteService {
     }
 
     return retrievedNotes;
+  }
+
+  Future<List<AtKey>> _getSharedKeys() async {
+    return AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: 'cached.*notes');
+  }
+
+  Future<Map<String?, String>> getSharedRecipes() async {
+    Map<String?, String> recipesMap = <String?, String>{};
+
+    List<AtKey> sharedKeysList = await _getSharedKeys();
+
+    AtKey atKey = AtKey();
+
+    Metadata metadata = Metadata()..isCached = true;
+
+    for (AtKey element in sharedKeysList) {
+      atKey
+        ..key = element.key
+        ..sharedWith = element.sharedWith
+        ..sharedBy = element.sharedBy
+        ..metadata = metadata;
+
+      String? response =
+          (await AtClientManager.getInstance().atClient.get(atKey)).value;
+
+      if (response != null) {
+        recipesMap.putIfAbsent(element.key, () => response);
+      }
+    }
+
+    print("THE SHARED NOTES: " + recipesMap.toString());
+    return recipesMap;
   }
 
   // Need functions retrievedNotesSharedToMe()

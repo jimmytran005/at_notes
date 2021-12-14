@@ -50,6 +50,7 @@ class _AddNoteState extends State<AddNote> {
                 // TESTING....  retrieveSharedNotes() to see the shared instances
                 // noteService.retrieveSharedNotes();
                 // noteService.clearAllNotes();
+                noteService.getSharedRecipes();
               },
             ),
             IconButton(
