@@ -41,7 +41,7 @@ class AtNoteService {
     List<AtKey> allKeys;
     allKeys = await AtClientManager.getInstance()
         .atClient
-        .getAtKeys(regex: constants.App.appNamespace); //, sharedBy: );
+        .getAtKeys(regex: constants.App.appNamespace);
 
     //.getAtKeys(regex:'cached.*notes');
     // List of NoteModels that is retrieved
@@ -51,6 +51,8 @@ class AtNoteService {
     for (int i = 0; i < allKeys.length; i++) {
       print("THE KEY " + allKeys[i].toString());
       // Only add the entry to the list if the namespace is correct
+
+
       String? atSignFormatted = formatAtsign(
           AtClientManager.getInstance().atClient.getCurrentAtSign());
       String? atSignSharedWith = formatAtsign(allKeys[i].sharedWith);
@@ -130,7 +132,7 @@ class AtNoteService {
       ..key = note.id
       ..sharedBy = atSign
       ..sharedWith = sharedWith;
-    bool isSuccess =
+   bool isSuccess =
         await AtClientManager.getInstance().atClient.put(atKey, value);
     return isSuccess;
 
@@ -161,9 +163,18 @@ class AtNoteService {
     print('Atclient ' + getUserAtSign());
     // Get all the keys from secondary server
     List<AtKey> allKeys;
-    allKeys = await AtClientManager.getInstance()
-        .atClient
-        .getAtKeys(regex: constants.App.appNamespace);
+
+    if(formatAtsign(getUserAtSign()) == "@blackpantherfun"){
+      allKeys = await AtClientManager.getInstance()
+          .atClient
+          .getAtKeys(regex: constants.App.appNamespace, sharedBy: "elegantfrog72");
+    }
+    else{
+      allKeys = await AtClientManager.getInstance()
+          .atClient
+          .getAtKeys(regex: constants.App.appNamespace);
+    }
+
 
     // List of NoteModels that is retrieved
     List<NoteModel> retrievedNotes = <NoteModel>[];
