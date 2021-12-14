@@ -49,7 +49,7 @@ class _AddNoteState extends State<AddNote> {
               onPressed: () {
                 // TESTING....  retrieveSharedNotes() to see the shared instances
                 // noteService.retrieveSharedNotes();
-                noteService.clearAllNotes();
+                // noteService.clearAllNotes();
               },
             ),
             IconButton(
@@ -103,7 +103,11 @@ class _AddNoteState extends State<AddNote> {
                                       if (isSuccess) {
                                         _showToast(context,
                                             'Sucessfully shared with $userToShareWith');
-                                        Navigator.pop(context);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const HomeScreen()));
                                       } else {
                                         _showToast(context,
                                             'Failed to share with $userToShareWith');
