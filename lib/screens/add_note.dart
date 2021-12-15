@@ -45,11 +45,12 @@ class _AddNoteState extends State<AddNote> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.menu),
+              icon: Icon(Icons.refresh),
               onPressed: () {
                 // TESTING....  retrieveSharedNotes() to see the shared instances
                 // noteService.retrieveSharedNotes();
-                // noteService.clearAllNotes();
+                //noteService.clearAllNotes();
+                noteService.getSharedRecipes();
               },
             ),
             IconButton(
@@ -62,17 +63,27 @@ class _AddNoteState extends State<AddNote> {
                   builder: (BuildContext context) {
                     return Container(
                       height: 200,
-                      color: Colors.grey,
+                      color: Color(0x757575),
                       child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Text('Share your note with someone'),
-                            TextField(
-                              controller: sharedWithController,
+                            Text(
+                              'Enter the @sign you want to share',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.blueGrey,
+                              ),
                             ),
-                            Row(children: [
+                            TextField(
+                              textAlign: TextAlign.center,
+                              controller: sharedWithController,
+                              autofocus: true,
+                            ),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
                               ElevatedButton(
                                 child: const Text('Cancel'),
                                 onPressed: () => Navigator.pop(context),
@@ -95,6 +106,7 @@ class _AddNoteState extends State<AddNote> {
                                           creation_date:
                                               DateTime.parse(savedNote.date!),
                                           sharedWith: widget.note!.sharedWith!,
+                                          sharedBy: widget.note!.sharedBy!,
                                           isShared: false);
                                       bool isSuccess =
                                           await noteService.shareNote(
@@ -103,11 +115,13 @@ class _AddNoteState extends State<AddNote> {
                                       if (isSuccess) {
                                         _showToast(context,
                                             'Sucessfully shared with $userToShareWith');
+                                        Navigator.pop(context);
+                                        /*
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const HomeScreen()));
+                                                    const HomeScreen()));*/
                                       } else {
                                         _showToast(context,
                                             'Failed to share with $userToShareWith');
@@ -179,6 +193,9 @@ class _AddNoteState extends State<AddNote> {
                       sharedWith: (widget.note == null)
                           ? noteService.getUserAtSign()
                           : widget.note!.sharedWith!,
+                      sharedBy: (widget.note == null)
+                          ? noteService.getUserAtSign()
+                          : widget.note!.sharedBy!,
                       isShared: false);
 
                   bool isSuccess = await noteService.saveNote(noteToSave);

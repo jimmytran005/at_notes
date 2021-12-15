@@ -10,11 +10,12 @@ class Note extends StatelessWidget {
   String? description;
   String? date;
   String? sharedWith;
+  String? sharedBy;
   bool? isShared;
   bool? isExpanded;
 
   Note(this.id, this.title, this.description, this.date, this.sharedWith,
-      this.isExpanded, this.isShared,
+      this.sharedBy, this.isExpanded, this.isShared,
       {Key? key})
       : super(key: key);
 
@@ -46,11 +47,12 @@ class Note extends StatelessWidget {
                       padding: const EdgeInsets.all(15),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
                           children: [
                             Text(title!,
-                                style:
-                                    const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold,color: descriptionColor)),
+                                style: const TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: descriptionColor)),
                             Text(description!,
                                 style:
                                     const TextStyle(color: descriptionColor)),
@@ -67,7 +69,7 @@ class Note extends StatelessWidget {
                                           Text(date!,
                                               style: const TextStyle(
                                                   color: dateColor)),
-                                          Text("Shared to: " + sharedWith!,
+                                          Text("Shared by: " + sharedBy!,
                                               style: const TextStyle(
                                                   color: dateColor))
                                         ],

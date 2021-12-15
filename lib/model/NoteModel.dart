@@ -3,6 +3,7 @@ class NoteModel {
   late String title;
   late String body;
   late String sharedWith;
+  late String sharedBy;
   late bool isShared;
   late DateTime creation_date;
 
@@ -12,5 +13,6 @@ class NoteModel {
       required this.body,
       required this.creation_date,
       required this.sharedWith,
+      required this.sharedBy,
       required this.isShared});
 }

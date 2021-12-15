@@ -41,6 +41,7 @@ class HomeScreen extends StatelessWidget {
                   notesList[i].body,
                   convertTime(notesList[i].creation_date),
                   notesList[i].sharedWith,
+                  notesList[i].sharedBy,
                   ((i + 1) == notesList.length) ? true : false,
                   false));
 
@@ -52,6 +53,7 @@ class HomeScreen extends StatelessWidget {
                     notesList[i + 1].body,
                     convertTime(notesList[i + 1].creation_date),
                     notesList[i + 1].sharedWith,
+                    notesList[i + 1].sharedBy,
                     notesList[i + 1].isShared,
                     false));
               }
@@ -64,6 +66,7 @@ class HomeScreen extends StatelessWidget {
             }
             return Column(children: listsOfRow);
           } else if (snapshot.hasError) {
+            print("What error:  "+snapshot.toString());
             return Text('Error');
           } else {
             return Text('No Notes');

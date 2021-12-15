@@ -25,7 +25,7 @@ class SharedPage extends StatelessWidget {
               if (snapshot.hasData) {
                 List<NoteModel> notesList = snapshot.data;
                 List<Widget> listsOfRow = <Widget>[];
-                for (int i = 0; i < notesList.length; i += 2) {
+                for (int i = 0; i < notesList.length; i++) {
                   List<Widget> rowChildren = <Widget>[];
 
                   rowChildren.add(Note(
@@ -34,20 +34,9 @@ class SharedPage extends StatelessWidget {
                       notesList[i].body,
                       notesList[i].creation_date.toString(),
                       notesList[i].sharedWith,
-                      ((i + 1) == notesList.length) ? true : false,
+                      notesList[i].sharedBy,
+                      true,
                       notesList[i].isShared));
-
-                  // If the next index exists
-                  if ((i + 1) < notesList.length) {
-                    rowChildren.add(Note(
-                        notesList[i + 1].id,
-                        notesList[i + 1].title,
-                        notesList[i + 1].body,
-                        notesList[i + 1].creation_date.toString(),
-                        notesList[i + 1].sharedWith,
-                        false,
-                        notesList[i + 1].isShared));
-                  }
 
                   var row = Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -69,7 +58,7 @@ class SharedPage extends StatelessWidget {
 
   Future<List<NoteModel>> _scanShared() async {
     AtNoteService atNoteService = AtNoteService();
-    List<NoteModel> listOfNotes = await atNoteService.retrieveSharedNotes();
+    List<NoteModel> listOfNotes = await atNoteService.getSharedRecipes();
     return listOfNotes;
   }
 }
