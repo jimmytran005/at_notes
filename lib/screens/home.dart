@@ -66,6 +66,7 @@ class HomeScreen extends StatelessWidget {
             }
             return Column(children: listsOfRow);
           } else if (snapshot.hasError) {
+            print("What error:  "+snapshot.toString());
             return Text('Error');
           } else {
             return Text('No Notes');

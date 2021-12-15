@@ -57,6 +57,9 @@ class AtNoteService {
       String currentSharedBy = allKeys[i].sharedBy!;
       String currentSharedWith = allKeys[i].sharedWith!;
 
+
+
+
       // Filter out the notes that belong to this user
       if (currentSharedWith == getUserAtSign() &&
           currentSharedBy == formatAtsign(getUserAtSign())) {
@@ -171,23 +174,6 @@ class AtNoteService {
       return false;
     }
 
-/*
-    try{
-      await AtClientManager.getInstance().notificationService.notify(
-        NotificationParams.forUpdate(
-          atKey,
-          value: value,
-        ),
-      );
-      return true;
-    } on AtClientException catch (e) {
-      print('AtClientException : ${e.errorCode} - ${e.errorMessage}');
-      return false;
-    } catch (e) {
-      print('Exception : $e');
-      return false;
-    }
-*/
   }
 
   String? formatAtsign(String? atSign) {
@@ -199,15 +185,9 @@ class AtNoteService {
     // Get all the keys from secondary server
     List<AtKey> allKeys;
 
-    if (formatAtsign(getUserAtSign()) == "@blackpantherfun") {
-      allKeys = await AtClientManager.getInstance().atClient.getAtKeys(
-          regex: constants.App.appNamespace, sharedBy: "elegantfrog72");
-    } else {
-      allKeys = await AtClientManager.getInstance()
-          .atClient
-          .getAtKeys(regex: constants.App.appNamespace);
-    }
-
+    allKeys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: constants.App.appNamespace);
     // List of NoteModels that is retrieved
     List<NoteModel> retrievedNotes = <NoteModel>[];
 
@@ -244,6 +224,7 @@ class AtNoteService {
     return AtClientManager.getInstance()
         .atClient
         .getAtKeys(regex: 'cached.*notes');
+
   }
 
 // NEED TO STRUCTURE THIS FUNCTION TO RETURN A Future<List<NoteModel>>
@@ -281,8 +262,6 @@ class AtNoteService {
   Future<List<NoteModel>> getSharedRecipes() async {
     List<NoteModel> listOfSharedNotes = <NoteModel>[];
 
-    Map<String?, String> recipesMap = <String?, String>{};
-
     List<AtKey> sharedKeysList = await _getSharedKeys();
     print("sharedKeyList : " + sharedKeysList.toString());
 
@@ -296,6 +275,8 @@ class AtNoteService {
         ..sharedWith = element.sharedWith
         ..sharedBy = element.sharedBy
         ..metadata = metadata;
+
+
 
       String? response =
           (await AtClientManager.getInstance().atClient.get(atKey)).value;
