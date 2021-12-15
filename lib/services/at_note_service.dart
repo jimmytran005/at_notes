@@ -1,11 +1,8 @@
-import 'dart:isolate';
-
 import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:at_client/src/service/notification_service.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_notes/model/NoteModel.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:at_notes/utils/constants.dart' as constants;
 
@@ -38,43 +35,47 @@ class AtNoteService {
   // Function to retrieve the notes from the database
   // Return - a list of NoteModels
   Future<List<NoteModel>> retriveNotes() async {
-    print('Atclient ' + getUserAtSign());
     // Get all the keys from secondary server
     List<AtKey> allKeys;
     allKeys = await AtClientManager.getInstance()
         .atClient
         .getAtKeys(regex: constants.App.appNamespace);
 
-    //.getAtKeys(regex:'cached.*notes');
     // List of NoteModels that is retrieved
     List<NoteModel> retrievedNotes = <NoteModel>[];
 
     // We will loop through the keys and continiously lookup the value based on atKey
     for (int i = 0; i < allKeys.length; i++) {
-      print("THE KEY " + allKeys[i].toString());
-      // Only add the entry to the list if the namespace is correct
+      print("ID: " +
+          allKeys[i].key.toString() +
+          " sharedWith: " +
+          allKeys[i].sharedWith! +
+          " sharedBy: " +
+          allKeys[i].sharedBy!);
 
-      String? atSignFormatted = formatAtsign(
-          AtClientManager.getInstance().atClient.getCurrentAtSign());
-      String? atSignSharedWith = formatAtsign(allKeys[i].sharedWith);
+      // Get sharedby and sharedwith for current note`
+      String currentSharedBy = allKeys[i].sharedBy!;
+      String currentSharedWith = allKeys[i].sharedWith!;
 
-      if (atSignFormatted! != atSignSharedWith!) {
-        continue;
+      // Filter out the notes that belong to this user
+      if (currentSharedWith == getUserAtSign() &&
+          currentSharedBy == formatAtsign(getUserAtSign())) {
+        var retrievedNote = await getOneNote(allKeys[i]);
+        var noteContent = retrievedNote.value.split(constants.App.splitter);
+        var note = NoteModel(
+            id: allKeys[i].key!,
+            title: noteContent[0],
+            body: noteContent[1],
+            creation_date: DateTime.parse(noteContent[2]),
+            sharedWith: allKeys[i].sharedWith!,
+            sharedBy: allKeys[i].sharedBy!,
+            isShared: false);
+        retrievedNotes.add(note);
       }
-
-      var retrievedNote = await getOneNote(allKeys[i]);
-      var noteContent = retrievedNote.value.split(constants.App.splitter);
-      var note = NoteModel(
-          id: allKeys[i].key!,
-          title: noteContent[0],
-          body: noteContent[1],
-          creation_date: DateTime.parse(noteContent[2]),
-          sharedWith: allKeys[i].sharedWith!,
-          isShared: false);
-      retrievedNotes.add(note);
     }
 
-    print('retrievedNotes ' + retrievedNotes.toString());
+    print('retrievedNotes List --> ' + retrievedNotes.toString());
+    print('\n\n');
     return retrievedNotes;
   }
 
@@ -150,8 +151,6 @@ class AtNoteService {
         ..sharedWith = atSign
         ..sharedBy = atSign!.replaceAll("@", "")
         ..namespace = constants.App.appNamespace;
-
-      print(lookup);
 
       // Lookup note and get the value of it
       String value =
@@ -233,6 +232,7 @@ class AtNoteService {
           body: noteContent[1],
           creation_date: DateTime.parse(noteContent[2]),
           sharedWith: allKeys[i].sharedWith!,
+          sharedBy: allKeys[i].sharedBy!,
           isShared: true);
       retrievedNotes.add(note);
     }
@@ -246,10 +246,45 @@ class AtNoteService {
         .getAtKeys(regex: 'cached.*notes');
   }
 
-  Future<Map<String?, String>> getSharedRecipes() async {
+// NEED TO STRUCTURE THIS FUNCTION TO RETURN A Future<List<NoteModel>>
+  // Future<Map<String?, String>> getSharedRecipes() async {
+  //   List<NoteModel> listOfSharedNotes = <NoteModel>[];
+
+  //   Map<String?, String> recipesMap = <String?, String>{};
+
+  //   List<AtKey> sharedKeysList = await _getSharedKeys();
+  //   print("sharedKeyList : " + sharedKeysList.toString());
+
+  //   AtKey atKey = AtKey();
+
+  //   Metadata metadata = Metadata()..isCached = true;
+
+  //   for (AtKey element in sharedKeysList) {
+  //     atKey
+  //       ..key = element.key
+  //       ..sharedWith = element.sharedWith
+  //       ..sharedBy = element.sharedBy
+  //       ..metadata = metadata;
+
+  //     String? response =
+  //         (await AtClientManager.getInstance().atClient.get(atKey)).value;
+
+  //     if (response != null) {
+  //       recipesMap.putIfAbsent(element.key, () => response);
+  //     }
+  //   }
+
+  //   print("THE SHARED NOTES: " + recipesMap.toString());
+  //   return recipesMap;
+  // }
+
+  Future<List<NoteModel>> getSharedRecipes() async {
+    List<NoteModel> listOfSharedNotes = <NoteModel>[];
+
     Map<String?, String> recipesMap = <String?, String>{};
 
     List<AtKey> sharedKeysList = await _getSharedKeys();
+    print("sharedKeyList : " + sharedKeysList.toString());
 
     AtKey atKey = AtKey();
 
@@ -265,13 +300,29 @@ class AtNoteService {
       String? response =
           (await AtClientManager.getInstance().atClient.get(atKey)).value;
 
-      if (response != null) {
-        recipesMap.putIfAbsent(element.key, () => response);
-      }
+      // if (response != null) {
+      //   recipesMap.putIfAbsent(element.key, () => response);
+      // }
+      var noteContent = response!.split(constants.App.splitter);
+      NoteModel sharedNote = NoteModel(
+          id: element.key!,
+          title: noteContent[0],
+          body: noteContent[1],
+          creation_date: DateTime.parse(noteContent[2]),
+          sharedWith: element.sharedWith!,
+          sharedBy: element.sharedBy!,
+          isShared: true);
+
+      listOfSharedNotes.add(sharedNote);
     }
 
-    print("THE SHARED NOTES: " + recipesMap.toString());
-    return recipesMap;
+    // print("THE SHARED NOTES: " + recipesMap.toString());
+
+    // Iterate through the receipe map and create NoteModel instances to store into listOfSharedNotes
+    // title, content, date, id, sharedWith, sharedBy, isShared
+    // recipesMap.forEach((k, v) => {print(k)});
+    print("LIST OF NOTES " + listOfSharedNotes.toString());
+    return listOfSharedNotes;
   }
 
   // Need functions retrievedNotesSharedToMe()

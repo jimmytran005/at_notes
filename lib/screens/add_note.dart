@@ -96,6 +96,7 @@ class _AddNoteState extends State<AddNote> {
                                           creation_date:
                                               DateTime.parse(savedNote.date!),
                                           sharedWith: widget.note!.sharedWith!,
+                                          sharedBy: widget.note!.sharedBy!,
                                           isShared: false);
                                       bool isSuccess =
                                           await noteService.shareNote(
@@ -180,6 +181,9 @@ class _AddNoteState extends State<AddNote> {
                       sharedWith: (widget.note == null)
                           ? noteService.getUserAtSign()
                           : widget.note!.sharedWith!,
+                      sharedBy: (widget.note == null)
+                          ? noteService.getUserAtSign()
+                          : widget.note!.sharedBy!,
                       isShared: false);
 
                   bool isSuccess = await noteService.saveNote(noteToSave);
