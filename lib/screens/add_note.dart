@@ -50,7 +50,7 @@ class _AddNoteState extends State<AddNote> {
                 // TESTING....  retrieveSharedNotes() to see the shared instances
                 // noteService.retrieveSharedNotes();
                 // noteService.clearAllNotes();
-                noteService.getSharedRecipes();
+                // noteService.getSharedNotes();
               },
             ),
             IconButton(
@@ -63,7 +63,7 @@ class _AddNoteState extends State<AddNote> {
                   builder: (BuildContext context) {
                     return Container(
                       height: 200,
-                      color: Colors.grey,
+                      color: Colors.white,
                       child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -73,54 +73,64 @@ class _AddNoteState extends State<AddNote> {
                             TextField(
                               controller: sharedWithController,
                             ),
-                            Row(children: [
-                              ElevatedButton(
-                                child: const Text('Cancel'),
-                                onPressed: () => Navigator.pop(context),
-                              ),
-                              ElevatedButton(
-                                  child: const Text('Share'),
-                                  onPressed: () async {
-                                    // noteService.shareNote(note, sharedWithController.text)
-                                    print(widget.note!.title);
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                      padding: EdgeInsets.all(10.0),
+                                      child: ElevatedButton(
+                                        child: const Text('Cancel'),
+                                        onPressed: () => Navigator.pop(context),
+                                      )),
+                                  Padding(
+                                      padding: EdgeInsets.all(10.0),
+                                      child: ElevatedButton(
+                                          child: const Text('Share'),
+                                          onPressed: () async {
+                                            // noteService.shareNote(note, sharedWithController.text)
+                                            print(widget.note!.title);
 
-                                    if (widget.note != null &&
-                                        sharedWithController.text != '') {
-                                      String userToShareWith =
-                                          sharedWithController.text;
-                                      Note savedNote = widget.note!;
-                                      NoteModel noteModel = NoteModel(
-                                          id: savedNote.id!,
-                                          title: savedNote.title!,
-                                          body: savedNote.description!,
-                                          creation_date:
-                                              DateTime.parse(savedNote.date!),
-                                          sharedWith: widget.note!.sharedWith!,
-                                          sharedBy: widget.note!.sharedBy!,
-                                          isShared: false);
-                                      bool isSuccess =
-                                          await noteService.shareNote(
-                                              noteModel, userToShareWith);
+                                            if (widget.note != null &&
+                                                sharedWithController.text !=
+                                                    '') {
+                                              String userToShareWith =
+                                                  sharedWithController.text;
+                                              Note savedNote = widget.note!;
+                                              NoteModel noteModel = NoteModel(
+                                                  id: savedNote.id!,
+                                                  title: savedNote.title!,
+                                                  body: savedNote.description!,
+                                                  creation_date: DateTime.parse(
+                                                      savedNote.date!),
+                                                  sharedWith:
+                                                      widget.note!.sharedWith!,
+                                                  sharedBy:
+                                                      widget.note!.sharedBy!,
+                                                  isShared: false);
+                                              bool isSuccess =
+                                                  await noteService.shareNote(
+                                                      noteModel,
+                                                      userToShareWith);
 
-                                      if (isSuccess) {
-                                        _showToast(context,
-                                            'Sucessfully shared with $userToShareWith');
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const HomeScreen()));
-                                      } else {
-                                        _showToast(context,
-                                            'Failed to share with $userToShareWith');
-                                        Navigator.pop(context);
-                                      }
-                                    } else {
-                                      print(
-                                          'CANNOT SHARE this note until saved');
-                                    }
-                                  })
-                            ])
+                                              if (isSuccess) {
+                                                _showToast(context,
+                                                    'Sucessfully shared with $userToShareWith');
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const HomeScreen()));
+                                              } else {
+                                                _showToast(context,
+                                                    '@sign @$userToShareWith does not exist!');
+                                                Navigator.pop(context);
+                                              }
+                                            } else {
+                                              print(
+                                                  'CANNOT SHARE this note until saved');
+                                            }
+                                          }))
+                                ])
                           ],
                         ),
                       ),
@@ -138,8 +148,7 @@ class _AddNoteState extends State<AddNote> {
                 AtKey atKey = AtKey();
                 atKey.sharedWith = widget.note!.sharedWith!;
                 atKey.key = widget.note!.id;
-                bool isSuccess =
-                    await noteService.deleteNote(atKey, widget.note!.isShared!);
+                bool isSuccess = await noteService.deleteNote(atKey);
                 if (isSuccess) {
                   _showToast(context, 'Sucessfully deleted note!');
                   // Navigator.pop(context);

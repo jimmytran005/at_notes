@@ -97,6 +97,9 @@ class HomeScreen extends StatelessWidget {
 class NavigationDrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    AtNoteService noteService = AtNoteService();
+    String atSign = noteService.getUserAtSign();
+
     final padding = EdgeInsets.symmetric(horizontal: 20);
     return Drawer(
         child: Material(
@@ -104,7 +107,10 @@ class NavigationDrawerWidget extends StatelessWidget {
       child: ListView(
         padding: padding,
         children: <Widget>[
-          const SizedBox(height: 48),
+          const SizedBox(height: 50),
+          buildUserWelcome(
+            text: 'Welcome, $atSign',
+          ),
           buildMenuItem(
             text: 'Shared Notes',
             icon: Icons.people_alt_outlined,
@@ -135,6 +141,19 @@ class NavigationDrawerWidget extends StatelessWidget {
     return ListTile(
       leading: Icon(icon, color: color),
       title: Text(text, style: TextStyle(fontSize: 20, color: color)),
+      hoverColor: hoverColor,
+      onTap: onClicked,
+    );
+  }
+
+  Widget buildUserWelcome({
+    required String text,
+    VoidCallback? onClicked,
+  }) {
+    final color = Colors.white;
+    final hoverColor = Colors.white70;
+    return ListTile(
+      title: Text(text, style: TextStyle(fontSize: 15, color: color)),
       hoverColor: hoverColor,
       onTap: onClicked,
     );

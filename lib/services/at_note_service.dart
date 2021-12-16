@@ -1,8 +1,6 @@
 import 'package:at_client_mobile/at_client_mobile.dart';
 import 'package:at_commons/at_commons.dart';
 import 'package:at_notes/model/NoteModel.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:at_notes/utils/constants.dart' as constants;
 
@@ -46,13 +44,6 @@ class AtNoteService {
 
     // We will loop through the keys and continiously lookup the value based on atKey
     for (int i = 0; i < allKeys.length; i++) {
-      print("ID: " +
-          allKeys[i].key.toString() +
-          " sharedWith: " +
-          allKeys[i].sharedWith! +
-          " sharedBy: " +
-          allKeys[i].sharedBy!);
-
       // Get sharedby and sharedwith for current note`
       String currentSharedBy = allKeys[i].sharedBy!;
       String currentSharedWith = allKeys[i].sharedWith!;
@@ -73,19 +64,12 @@ class AtNoteService {
         retrievedNotes.add(note);
       }
     }
-
-    print('retrievedNotes List --> ' + retrievedNotes.toString());
-    print('\n\n');
     return retrievedNotes;
   }
 
   // Function to delete the note based on the atKey
   // Wil return a Future<bool> that will determine if the deletion was a success or not
   Future<bool> deleteNote(AtKey atKey, [bool isShared = false]) async {
-    print("deleteNote atkey:" +
-        atKey.toString() +
-        " isShared:" +
-        isShared.toString());
     // If it is a shared note, then we want to just delete that note
     if (isShared) {
       return await AtClientManager.getInstance().atClient.delete(atKey);
@@ -99,7 +83,6 @@ class AtNoteService {
 
         for (int i = 0; i < allKeys.length; i++) {
           if (allKeys[i].key == atKey.key) {
-            print("KEYS ARE EQUAL");
             await AtClientManager.getInstance().atClient.delete(allKeys[i]);
           }
         }
@@ -108,6 +91,45 @@ class AtNoteService {
         return false;
       }
     }
+  }
+
+  Future<List<NoteModel>> retrieveSharedNotes() async {
+    print('Atclient ' + getUserAtSign());
+    // Get all the keys from secondary server
+    List<AtKey> allKeys;
+
+    allKeys = await AtClientManager.getInstance()
+        .atClient
+        .getAtKeys(regex: constants.App.appNamespace);
+
+    // List of NoteModels that is retrieved
+    List<NoteModel> retrievedNotes = <NoteModel>[];
+
+    // We will loop through the keys and continiously lookup the value based on atKey
+    for (int i = 0; i < allKeys.length; i++) {
+      // Only add the entry to the list if the namespace is correct
+      String? atSignFormatted = formatAtsign(
+          AtClientManager.getInstance().atClient.getCurrentAtSign());
+      String? atSignSharedWith = formatAtsign(allKeys[i].sharedWith);
+
+      if (atSignFormatted! == atSignSharedWith!) {
+        continue;
+      }
+
+      var retrievedNote = await getOneNote(allKeys[i]);
+      var noteContent = retrievedNote.value.split(constants.App.splitter);
+      var note = NoteModel(
+          id: allKeys[i].key!,
+          title: noteContent[0],
+          body: noteContent[1],
+          creation_date: DateTime.parse(noteContent[2]),
+          sharedWith: allKeys[i].sharedWith!,
+          sharedBy: allKeys[i].sharedBy!,
+          isShared: true);
+      retrievedNotes.add(note);
+    }
+
+    return retrievedNotes;
   }
 
   // GET look up the value based on the atKey
@@ -125,18 +147,6 @@ class AtNoteService {
   // Function to generate time based uuid to uniquely identify a note
   String generateTimeBasedUUID() {
     return const Uuid().v1();
-  }
-
-  // Function to delete all notes -- FOR DEBUGGING/DEVELOPMENT USE ONLY
-  Future<void> clearAllNotes() async {
-    List<AtKey> allKeys;
-    allKeys = await AtClientManager.getInstance()
-        .atClient
-        .getAtKeys(regex: constants.App.appNamespace);
-
-    for (int i = 0; i < allKeys.length; i++) {
-      await deleteNote(allKeys[i]);
-    }
   }
 
   // Function to share a note with someone - NOT DONE
@@ -170,74 +180,10 @@ class AtNoteService {
     } catch (e) {
       return false;
     }
-
-/*
-    try{
-      await AtClientManager.getInstance().notificationService.notify(
-        NotificationParams.forUpdate(
-          atKey,
-          value: value,
-        ),
-      );
-      return true;
-    } on AtClientException catch (e) {
-      print('AtClientException : ${e.errorCode} - ${e.errorMessage}');
-      return false;
-    } catch (e) {
-      print('Exception : $e');
-      return false;
-    }
-*/
   }
 
   String? formatAtsign(String? atSign) {
     return atSign?.trim().replaceFirst("@", "");
-  }
-
-  Future<List<NoteModel>> retrieveSharedNotes() async {
-    print('Atclient ' + getUserAtSign());
-    // Get all the keys from secondary server
-    List<AtKey> allKeys;
-
-    if (formatAtsign(getUserAtSign()) == "@blackpantherfun") {
-      allKeys = await AtClientManager.getInstance().atClient.getAtKeys(
-          regex: constants.App.appNamespace, sharedBy: "elegantfrog72");
-    } else {
-      allKeys = await AtClientManager.getInstance()
-          .atClient
-          .getAtKeys(regex: constants.App.appNamespace);
-    }
-
-    // List of NoteModels that is retrieved
-    List<NoteModel> retrievedNotes = <NoteModel>[];
-
-    // We will loop through the keys and continiously lookup the value based on atKey
-    print("\n");
-    for (int i = 0; i < allKeys.length; i++) {
-      print("THE KEY FROM SHARED RETRIEVAL " + allKeys[i].toString());
-      // Only add the entry to the list if the namespace is correct
-      String? atSignFormatted = formatAtsign(
-          AtClientManager.getInstance().atClient.getCurrentAtSign());
-      String? atSignSharedWith = formatAtsign(allKeys[i].sharedWith);
-
-      if (atSignFormatted! == atSignSharedWith!) {
-        continue;
-      }
-
-      var retrievedNote = await getOneNote(allKeys[i]);
-      var noteContent = retrievedNote.value.split(constants.App.splitter);
-      var note = NoteModel(
-          id: allKeys[i].key!,
-          title: noteContent[0],
-          body: noteContent[1],
-          creation_date: DateTime.parse(noteContent[2]),
-          sharedWith: allKeys[i].sharedWith!,
-          sharedBy: allKeys[i].sharedBy!,
-          isShared: true);
-      retrievedNotes.add(note);
-    }
-
-    return retrievedNotes;
   }
 
   Future<List<AtKey>> _getSharedKeys() async {
@@ -246,39 +192,7 @@ class AtNoteService {
         .getAtKeys(regex: 'cached.*notes');
   }
 
-// NEED TO STRUCTURE THIS FUNCTION TO RETURN A Future<List<NoteModel>>
-  // Future<Map<String?, String>> getSharedRecipes() async {
-  //   List<NoteModel> listOfSharedNotes = <NoteModel>[];
-
-  //   Map<String?, String> recipesMap = <String?, String>{};
-
-  //   List<AtKey> sharedKeysList = await _getSharedKeys();
-  //   print("sharedKeyList : " + sharedKeysList.toString());
-
-  //   AtKey atKey = AtKey();
-
-  //   Metadata metadata = Metadata()..isCached = true;
-
-  //   for (AtKey element in sharedKeysList) {
-  //     atKey
-  //       ..key = element.key
-  //       ..sharedWith = element.sharedWith
-  //       ..sharedBy = element.sharedBy
-  //       ..metadata = metadata;
-
-  //     String? response =
-  //         (await AtClientManager.getInstance().atClient.get(atKey)).value;
-
-  //     if (response != null) {
-  //       recipesMap.putIfAbsent(element.key, () => response);
-  //     }
-  //   }
-
-  //   print("THE SHARED NOTES: " + recipesMap.toString());
-  //   return recipesMap;
-  // }
-
-  Future<List<NoteModel>> getSharedRecipes() async {
+  Future<List<NoteModel>> getSharedNotes() async {
     List<NoteModel> listOfSharedNotes = <NoteModel>[];
 
     Map<String?, String> recipesMap = <String?, String>{};
@@ -316,14 +230,6 @@ class AtNoteService {
       listOfSharedNotes.add(sharedNote);
     }
 
-    // print("THE SHARED NOTES: " + recipesMap.toString());
-
-    // Iterate through the receipe map and create NoteModel instances to store into listOfSharedNotes
-    // title, content, date, id, sharedWith, sharedBy, isShared
-    // recipesMap.forEach((k, v) => {print(k)});
-    print("LIST OF NOTES " + listOfSharedNotes.toString());
     return listOfSharedNotes;
   }
-
-  // Need functions retrievedNotesSharedToMe()
 }

@@ -58,7 +58,7 @@ class SharedPage extends StatelessWidget {
 
   Future<List<NoteModel>> _scanShared() async {
     AtNoteService atNoteService = AtNoteService();
-    List<NoteModel> listOfNotes = await atNoteService.getSharedRecipes();
+    List<NoteModel> listOfNotes = await atNoteService.getSharedNotes();
     return listOfNotes;
   }
 }
