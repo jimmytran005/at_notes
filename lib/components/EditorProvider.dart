@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Text_Field.dart';
 
+// This is the editor component that is within the add notes page
 class EditorProvider extends ChangeNotifier {
   List<FocusNode> _nodes = [];
   List<TextEditingController> _text = [];

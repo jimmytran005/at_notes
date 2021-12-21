@@ -4,6 +4,7 @@ import 'EditorProvider.dart';
 import 'KeyBoardToolBar.dart';
 import 'Text_Field.dart';
 
+// This is the text editor component that is used within the add notes screen
 class TextEditor extends StatefulWidget {
   TextEditor({Key? key}) : super(key: key);
 

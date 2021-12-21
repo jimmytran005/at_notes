@@ -14,6 +14,7 @@ import 'package:at_notes/utils/constants.dart' as constants;
 import 'package:at_notes/screens/home.dart';
 import 'package:at_notes/screens/add_note.dart';
 
+// The main function that executes the app
 Future<void> main() async {
   await AtEnv.load();
   runApp(const MyApp());
@@ -37,6 +38,7 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+// Main app widget
 class _MyAppState extends State<MyApp> {
   // * load the AtClientPreference in the background
   Future<AtClientPreference> futurePreference = loadAtClientPreference();
@@ -136,12 +138,12 @@ class MainWidget extends StatelessWidget {
     return MaterialApp(
       title: 'Named Routes Demo',
       // Start the app with the "/" named route. In this case, the app starts
-      // on the FirstScreen widget.
+      // on the HomeScreen widget.
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the HomeScreen widget.
         '/': (context) => HomeScreen(),
-        // When navigating to the "/note" route, build the TakenotesScreen widget.
+        // When navigating to the "/note" route, build the AddNote widget.
         '/note': (context) => AddNote(),
       },
     );

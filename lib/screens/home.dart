@@ -4,6 +4,7 @@ import 'package:at_notes/services/at_note_service.dart';
 import 'package:flutter/material.dart';
 import 'package:at_notes/components/note.dart';
 
+// Home screen that shows all of the user's notes
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -98,14 +99,21 @@ class HomeScreen extends StatelessWidget {
 class NavigationDrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    AtNoteService noteService = AtNoteService();
+    String atSign = noteService.getUserAtSign();
+
     final padding = EdgeInsets.symmetric(horizontal: 20);
+    // A drawer menu that has selections Shared Notes, Favoroutes, and Recent Deleted notes
     return Drawer(
         child: Material(
       color: Colors.blue,
       child: ListView(
         padding: padding,
         children: <Widget>[
-          const SizedBox(height: 48),
+          const SizedBox(height: 50),
+          buildUserWelcome(
+            text: 'Welcome, $atSign',
+          ),
           buildMenuItem(
             text: 'Shared Notes',
             icon: Icons.people_alt_outlined,
@@ -126,6 +134,7 @@ class NavigationDrawerWidget extends StatelessWidget {
     ));
   }
 
+  // Function to build the widget menu for the drawer
   Widget buildMenuItem({
     required String text,
     required IconData icon,
@@ -141,6 +150,21 @@ class NavigationDrawerWidget extends StatelessWidget {
     );
   }
 
+  // Function to build the user welcome message on the drawer
+  Widget buildUserWelcome({
+    required String text,
+    VoidCallback? onClicked,
+  }) {
+    final color = Colors.white;
+    final hoverColor = Colors.white70;
+    return ListTile(
+      title: Text(text, style: TextStyle(fontSize: 15, color: color)),
+      hoverColor: hoverColor,
+      onTap: onClicked,
+    );
+  }
+
+  // Function to select an item on the drawer
   void selectedItem(BuildContext context, int index) {
     switch (index) {
       case 0:

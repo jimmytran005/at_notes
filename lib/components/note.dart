@@ -50,10 +50,16 @@ class Note extends StatelessWidget {
                           children: [
                             Text(title!,
                                 style: const TextStyle(
-                                    fontSize: 20.0,
+                                    fontSize: 15.0,
                                     fontWeight: FontWeight.bold,
                                     color: descriptionColor)),
-                            Text(description!,
+                            Text(
+                                description!.substring(
+                                        0,
+                                        (description!.length > 30)
+                                            ? 22
+                                            : description!.length) +
+                                    ".....",
                                 style:
                                     const TextStyle(color: descriptionColor)),
                             SizedBox(
