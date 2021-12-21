@@ -1,3 +1,4 @@
+// This is the class that models the Note instances
 class NoteModel {
   late String id;
   late String title;

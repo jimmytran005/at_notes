@@ -94,7 +94,6 @@ class AtNoteService {
   }
 
   Future<List<NoteModel>> retrieveSharedNotes() async {
-    print('Atclient ' + getUserAtSign());
     // Get all the keys from secondary server
     List<AtKey> allKeys;
 
@@ -192,13 +191,14 @@ class AtNoteService {
         .getAtKeys(regex: 'cached.*notes');
   }
 
+  // Function used to get all of the notes shared to this user
+  // Will return a list of NoteModel instances
   Future<List<NoteModel>> getSharedNotes() async {
     List<NoteModel> listOfSharedNotes = <NoteModel>[];
 
     Map<String?, String> recipesMap = <String?, String>{};
 
     List<AtKey> sharedKeysList = await _getSharedKeys();
-    print("sharedKeyList : " + sharedKeysList.toString());
 
     AtKey atKey = AtKey();
 
@@ -214,9 +214,6 @@ class AtNoteService {
       String? response =
           (await AtClientManager.getInstance().atClient.get(atKey)).value;
 
-      // if (response != null) {
-      //   recipesMap.putIfAbsent(element.key, () => response);
-      // }
       var noteContent = response!.split(constants.App.splitter);
       NoteModel sharedNote = NoteModel(
           id: element.key!,

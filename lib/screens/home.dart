@@ -4,6 +4,7 @@ import 'package:at_notes/services/at_note_service.dart';
 import 'package:flutter/material.dart';
 import 'package:at_notes/components/note.dart';
 
+// Home screen that shows all of the user's notes
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -101,6 +102,7 @@ class NavigationDrawerWidget extends StatelessWidget {
     String atSign = noteService.getUserAtSign();
 
     final padding = EdgeInsets.symmetric(horizontal: 20);
+    // A drawer menu that has selections Shared Notes, Favoroutes, and Recent Deleted notes
     return Drawer(
         child: Material(
       color: Colors.blue,
@@ -131,6 +133,7 @@ class NavigationDrawerWidget extends StatelessWidget {
     ));
   }
 
+  // Function to build the widget menu for the drawer
   Widget buildMenuItem({
     required String text,
     required IconData icon,
@@ -146,6 +149,7 @@ class NavigationDrawerWidget extends StatelessWidget {
     );
   }
 
+  // Function to build the user welcome message on the drawer
   Widget buildUserWelcome({
     required String text,
     VoidCallback? onClicked,
@@ -159,6 +163,7 @@ class NavigationDrawerWidget extends StatelessWidget {
     );
   }
 
+  // Function to select an item on the drawer
   void selectedItem(BuildContext context, int index) {
     switch (index) {
       case 0:

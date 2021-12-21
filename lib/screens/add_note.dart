@@ -45,15 +45,6 @@ class _AddNoteState extends State<AddNote> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                // TESTING....  retrieveSharedNotes() to see the shared instances
-                // noteService.retrieveSharedNotes();
-                // noteService.clearAllNotes();
-                // noteService.getSharedNotes();
-              },
-            ),
-            IconButton(
               icon: Icon(Icons.send_to_mobile),
               onPressed: () async {
                 // This is a modal that will pop up to prompt the user if they want to share their notes with someone

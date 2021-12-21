@@ -56,7 +56,7 @@ class Note extends StatelessWidget {
                             Text(
                                 description!.substring(
                                         0,
-                                        (description!.length > 15)
+                                        (description!.length > 30)
                                             ? 22
                                             : description!.length) +
                                     ".....",

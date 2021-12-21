@@ -2,17 +2,11 @@ import 'package:at_notes/components/note.dart';
 import 'package:at_notes/model/NoteModel.dart';
 import 'package:at_notes/services/at_note_service.dart';
 import 'package:flutter/material.dart';
-import 'package:at_notes/model/NoteModel.dart';
-import 'package:at_notes/components/note.dart';
-import 'package:at_commons/at_commons.dart';
-import 'package:at_client_mobile/at_client_mobile.dart';
-import 'package:at_notes/utils/constants.dart' as constants;
-import 'package:at_notes/services/at_note_service.dart';
 
-// class SharedPage extends StatelessWidget {
-
+// This is the screen that shows all of the notes that are shared with that user
 class SharedPage extends StatelessWidget {
-  final String? atSign = AtNoteService().getUserAtSign();
+  const SharedPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(

@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 
 enum SmartTextType { H1, T, QUOTE, BULLET }
 
-extension SmartTextStyle on SmartTextType{
+// This is the text field component that is used within the widget where we are writing the note
+extension SmartTextStyle on SmartTextType {
   TextStyle get textStyle {
     switch (this) {
       case SmartTextType.QUOTE:
         return TextStyle(
-            fontSize: 16.0,
-            fontStyle: FontStyle.italic,
-            color: Colors.white70
-        );
+            fontSize: 16.0, fontStyle: FontStyle.italic, color: Colors.white70);
       case SmartTextType.H1:
         return TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold);
 
@@ -47,17 +45,16 @@ extension SmartTextStyle on SmartTextType{
         return '';
     }
   }
-
 }
+
 class SmartTextField extends StatelessWidget {
   final SmartTextType type;
   final TextEditingController? controller;
   final FocusNode? focusNode;
 
-  const SmartTextField({Key? key, required this.type,  this.controller,  this.focusNode})
+  const SmartTextField(
+      {Key? key, required this.type, this.controller, this.focusNode})
       : super(key: key);
-
-
 
   Widget build(BuildContext context) {
     return TextField(
@@ -69,14 +66,11 @@ class SmartTextField extends StatelessWidget {
         cursorColor: Colors.teal,
         textAlign: type.align,
         decoration: InputDecoration(
-            border:InputBorder.none,
+            border: InputBorder.none,
             prefixText: type.prefix,
             prefixStyle: type.textStyle,
             isDense: true,
-            contentPadding: type.padding
-        ),
-        style: type.textStyle
-    );
+            contentPadding: type.padding),
+        style: type.textStyle);
   }
-
 }
