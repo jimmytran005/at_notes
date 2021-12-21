@@ -48,6 +48,9 @@ class AtNoteService {
       String currentSharedBy = allKeys[i].sharedBy!;
       String currentSharedWith = allKeys[i].sharedWith!;
 
+
+
+
       // Filter out the notes that belong to this user
       if (currentSharedWith == getUserAtSign() &&
           currentSharedBy == formatAtsign(getUserAtSign())) {
@@ -189,14 +192,13 @@ class AtNoteService {
     return AtClientManager.getInstance()
         .atClient
         .getAtKeys(regex: 'cached.*notes');
+
   }
 
   // Function used to get all of the notes shared to this user
   // Will return a list of NoteModel instances
   Future<List<NoteModel>> getSharedNotes() async {
     List<NoteModel> listOfSharedNotes = <NoteModel>[];
-
-    Map<String?, String> recipesMap = <String?, String>{};
 
     List<AtKey> sharedKeysList = await _getSharedKeys();
 
@@ -210,6 +212,8 @@ class AtNoteService {
         ..sharedWith = element.sharedWith
         ..sharedBy = element.sharedBy
         ..metadata = metadata;
+
+
 
       String? response =
           (await AtClientManager.getInstance().atClient.get(atKey)).value;

@@ -45,6 +45,15 @@ class _AddNoteState extends State<AddNote> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: () {
+                // TESTING....  retrieveSharedNotes() to see the shared instances
+                // noteService.retrieveSharedNotes();
+                //noteService.clearAllNotes();
+                noteService.getSharedRecipes();
+              },
+            ),
+            IconButton(
               icon: Icon(Icons.send_to_mobile),
               onPressed: () async {
                 // This is a modal that will pop up to prompt the user if they want to share their notes with someone
@@ -60,9 +69,17 @@ class _AddNoteState extends State<AddNote> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Text('Share your note with someone'),
+                            Text(
+                              'Enter the @sign you want to share',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.blueGrey,
+                              ),
+                            ),
                             TextField(
+                              textAlign: TextAlign.center,
                               controller: sharedWithController,
+                              autofocus: true,
                             ),
                             Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
