@@ -5,6 +5,7 @@ import 'package:at_notes/model/NoteModel.dart';
 import 'package:at_notes/components/note.dart';
 import 'package:at_commons/at_commons.dart';
 
+// This is the screen to add/share/delete a note
 class AddNote extends StatefulWidget {
   Note? note;
 
@@ -45,15 +46,6 @@ class _AddNoteState extends State<AddNote> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () {
-                // TESTING....  retrieveSharedNotes() to see the shared instances
-                // noteService.retrieveSharedNotes();
-                //noteService.clearAllNotes();
-                noteService.getSharedRecipes();
-              },
-            ),
-            IconButton(
               icon: Icon(Icons.send_to_mobile),
               onPressed: () async {
                 // This is a modal that will pop up to prompt the user if they want to share their notes with someone
@@ -69,7 +61,7 @@ class _AddNoteState extends State<AddNote> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Text(
+                            const Text(
                               'Enter the @sign you want to share',
                               style: TextStyle(
                                 fontSize: 20.0,
@@ -251,6 +243,7 @@ class _AddNoteState extends State<AddNote> {
     );
   }
 
+  // This is a function to show a toast once a task is done
   void _showToast(BuildContext context, String message) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
