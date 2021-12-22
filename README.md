@@ -19,27 +19,34 @@ their notice.
 
 ## Set up Environment
 
-(1) Download the Git Command Line Interface to your local machine:
+- Download the Git Command Line Interface to your local machine:
 https://git-scm.com/downloads 
 
-(2) Download Flutter into your local machine: https://docs.flutter.dev/get-started/install 
+- Download Flutter into your local machine: https://docs.flutter.dev/get-started/install 
 
+## Build and run project
 
-(3) Clone the repository into your local machine using the git command:
+- Clone the repository into your local machine using the git command:
 
 ```bash
   git clone https://github.com/jimmytran005/at_notes 
 ```
 
-(4) Change to project directory:
+- Change to project directory:
 
 ```bash
   cd at_notes 
 ```
 
-(5) Run the flutter application:
+- Download the dependencies to the project:
+
+```bash
+  flutter pub get 
+```
+
+- Run the flutter application:
 
 ```bash
   flutter run  
 ```
-    
+
