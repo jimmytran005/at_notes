@@ -1,16 +1,45 @@
+
 # at_notes
 
-A new Flutter project.
+## Overview
+This is a note editing and sharing application that will allow users 
+to be able to create notes and share it with others in a surveillance-free, 
+and easy-to-use environment within the @platform. Users will login to their 
+@sign account to manage their notes. All notes are encrypted to a secondary 
+server, so users don’t need to worry about their data being collected without 
+their notice. 
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Authors
 
-A few resources to get you started if this is your first Flutter project:
+- Jimmy Tran ([@jimmytran16](https://www.github.com/jimmytran16))
+- Wyatt Liang ([@WyattLiang](https://github.com/WyattLiang))
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+## Set up Environment
+
+(1) Download the Git Command Line Interface to your local machine:
+https://git-scm.com/downloads 
+
+(2) Download Flutter into your local machine: https://docs.flutter.dev/get-started/install 
+
+
+(3) Clone the repository into your local machine using the git command:
+
+```bash
+  git clone https://github.com/jimmytran005/at_notes 
+```
+
+(4) Change to project directory:
+
+```bash
+  cd at_notes 
+```
+
+(5) Run the flutter application:
+
+```bash
+  flutter run  
+```
+    
